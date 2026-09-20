@@ -86,6 +86,12 @@ backend-up: backend-build backend-load backend-deploy backend-service backend-re
 ## Serviceにアクセスできるようにする
 backend-forward:
 	kubectl port-forward svc/backend 3000:3000
+## BackGround起動もできる
+backend-forward-bg:
+	kubectl port-forward svc/backend 5173:5173 > /tmp/backend-port-forward.log 2>&1 & echo $$! > /tmp/backend-port-forward.pid
+backend-forward-bg-stop:
+	kill `cat /tmp/backend-port-forward.pid`
+	rm -f /tmp/backend-port-forward.pid
 
 # frontend（frontend-upコマンドで問題なし）
 FRONTEND_IMAGE=tmp-app-frontend:latest
@@ -107,6 +113,12 @@ frontend-up: frontend-build frontend-load frontend-deploy frontend-service front
 ## Serviceにアクセスできるようにする
 frontend-forward:
 	kubectl port-forward svc/frontend 5173:5173
+## BackGround起動もできる
+frontend-forward-bg:
+	kubectl port-forward svc/frontend 5173:5173 > /tmp/frontend-port-forward.log 2>&1 & echo $$! > /tmp/frontend-port-forward.pid
+frontend-forward-bg-stop:
+	kill `cat /tmp/frontend-port-forward.pid`
+	rm -f /tmp/frontend-port-forward.pid
 
 # 削除
 deployment-delete:
