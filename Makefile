@@ -1,7 +1,13 @@
+# --------------------------------------------------
+# npm関連
+# --------------------------------------------------
 # make install-frontend PKG=@tailwind/vite DEV=1
 install-frontend:
 	npm --prefix frontend install $(if $(DEV),-D) $(PKG)
 
+# --------------------------------------------------
+# docker関連
+# --------------------------------------------------
 display-images:
 	docker images | grep tmp-app
 
@@ -32,9 +38,6 @@ run-backend: build-backend
 remove-backend:
 	docker rm -f tmp-app-backend
 
-kind-create:
-	kind create cluster --config kind-config.yaml
-
 kind-load: build-frontend build-backend
 	kind load docker-image tmp-app-frontend:latest --name tmp-app
 	kind load docker-image tmp-app-backend:latest --name tmp-app
@@ -46,5 +49,69 @@ kind-deploy: kind-load
 kind-status:
 	kubectl get pods,services -n tmp-app
 
+# --------------------------------------------------
+# Kubernetis関連
+# --------------------------------------------------
+APP_NAME=tmp-app
+
+kind-create:
+	kind create cluster --name $(APP_NAME)
+
 kind-delete:
-	kind delete cluster --name tmp-app
+	kind delete cluster --name $(APP_NAME)
+
+pods:
+	kubectl get pods
+
+services:
+	kubectl get svc
+
+# backend（backend-upコマンドで問題なし）
+BACKEND_IMAGE=tmp-app-backend:latest
+
+backend-build:
+	docker build -t $(BACKEND_IMAGE) ./backend
+backend-load:
+	kind load docker-image $(BACKEND_IMAGE) --name $(APP_NAME)
+backend-deploy:
+	kubectl apply -f k8s/backend-deployment.yaml
+backend-service:
+	kubectl apply -f k8s/backend-service.yaml
+backend-restart:
+	kubectl rollout restart deployment backend
+
+## 起動
+backend-up: backend-build backend-load backend-deploy backend-service backend-restart
+
+## Serviceにアクセスできるようにする
+backend-forward:
+	kubectl port-forward svc/backend 3000:3000
+
+# frontend（frontend-upコマンドで問題なし）
+FRONTEND_IMAGE=tmp-app-frontend:latest
+
+frontend-build:
+	docker build -t $(FRONTEND_IMAGE) ./frontend
+frontend-load:
+	kind load docker-image $(FRONTEND_IMAGE) --name $(APP_NAME)
+frontend-deploy:
+	kubectl apply -f k8s/frontend-deployment.yaml
+frontend-service:
+	kubectl apply -f k8s/frontend-service.yaml
+frontend-restart:
+	kubectl rollout restart deployment frontend
+
+## 起動
+frontend-up: frontend-build frontend-load frontend-deploy frontend-service frontend-restart
+
+## Serviceにアクセスできるようにする
+frontend-forward:
+	kubectl port-forward svc/frontend 5173:5173
+
+# 削除
+deployment-delete:
+	kubectl delete deployment frontend
+	kubectl delete deployment backend
+service-delete:
+	kubectl delete service frontend
+	kubectl delete service backend
