@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import HelloCard from '@/components/hello/HelloCard.vue'
+import HelloCard from '@/components/index/HelloCard.vue'
 </script>
 
 
