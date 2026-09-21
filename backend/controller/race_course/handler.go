@@ -5,12 +5,12 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+
+	raceService "tmp-app-backend/service/racing"
 )
 
 func Index(c *gin.Context) {
-	response := gin.H{
-		"result": "ok",
-	}
+	response := raceService.GetRaceCourses()
 
 	c.IndentedJSON(http.StatusOK, response)
 }

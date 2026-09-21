@@ -4,8 +4,8 @@ package race
 type TrackCondition string
 
 const (
-	TrackConditionFirm  TrackCondition = "firm"
-	TrackConditionGood  TrackCondition = "good"
-	TrackConditionYield TrackCondition = "yield"
-	TrackConditionSoft  TrackCondition = "soft"
+	TrackConditionFirm  TrackCondition = "firm"  // 良
+	TrackConditionGood  TrackCondition = "good"  // 稍良
+	TrackConditionYield TrackCondition = "yield" // 重
+	TrackConditionSoft  TrackCondition = "soft"  // 不良
 )

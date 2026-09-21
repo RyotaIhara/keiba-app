@@ -4,6 +4,6 @@ package race
 type Direction string
 
 const (
-	DirectionRight Direction = "right"
-	DirectionLeft  Direction = "left"
+	DirectionRight Direction = "right" // 右回り
+	DirectionLeft  Direction = "left"  // 左回り
 )

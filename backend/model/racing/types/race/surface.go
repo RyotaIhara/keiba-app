@@ -4,6 +4,6 @@ package race
 type Surface string
 
 const (
-	SurfaceTurf Surface = "turf"
-	SurfaceDirt Surface = "dirt"
+	SurfaceTurf Surface = "turf" // 芝
+	SurfaceDirt Surface = "dirt" // ダート
 )
