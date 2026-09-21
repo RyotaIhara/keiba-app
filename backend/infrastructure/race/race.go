@@ -7,12 +7,12 @@ import (
 	racingModel "tmp-app-backend/model/racing"
 )
 
-type Repository struct {
+type Store struct {
 	db *sql.DB
 }
 
-func NewRepository(db *sql.DB) *Repository {
-	return &Repository{db: db}
+func NewStore(db *sql.DB) *Store {
+	return &Store{db: db}
 }
 
 func scanRace(scanner interface{ Scan(...any) error }) (racingModel.Race, error) {
@@ -40,8 +40,8 @@ func scanRace(scanner interface{ Scan(...any) error }) (racingModel.Race, error)
 	return race, err
 }
 
-func (r *Repository) FetchRaces() ([]racingModel.Race, error) {
-	rows, err := r.db.Query(`
+func (s *Store) FetchRaces() ([]racingModel.Race, error) {
+	rows, err := s.db.Query(`
 		SELECT
 			r.id,
 			r.race_date,

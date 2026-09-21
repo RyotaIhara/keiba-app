@@ -7,12 +7,12 @@ import (
 	userModel "tmp-app-backend/model/user"
 )
 
-type Repository struct {
+type Store struct {
 	db *sql.DB
 }
 
-func NewRepository(db *sql.DB) *Repository {
-	return &Repository{db: db}
+func NewStore(db *sql.DB) *Store {
+	return &Store{db: db}
 }
 
 func scanUser(scanner interface{ Scan(...any) error }) (userModel.User, error) {
@@ -28,8 +28,8 @@ func scanUser(scanner interface{ Scan(...any) error }) (userModel.User, error) {
 	return user, err
 }
 
-func (r *Repository) FetchUsers() ([]userModel.User, error) {
-	rows, err := r.db.Query(`
+func (s *Store) FetchUsers() ([]userModel.User, error) {
+	rows, err := s.db.Query(`
 		SELECT id, code, name, password
 		FROM users
 		ORDER BY id
@@ -57,11 +57,11 @@ func (r *Repository) FetchUsers() ([]userModel.User, error) {
 	return users, nil
 }
 
-func (r *Repository) FindUserByCodeAndPass(
+func (s *Store) FindUserByCodeAndPass(
 	code string,
 	password string,
 ) (userModel.User, error) {
-	row := r.db.QueryRow(`
+	row := s.db.QueryRow(`
 		SELECT id, code, name, password
 		FROM users
 		WHERE code = ? AND password = ?

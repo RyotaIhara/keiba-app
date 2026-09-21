@@ -7,13 +7,13 @@ import (
 )
 
 type Service struct {
-	repository *userInfrastructure.Repository
+	store *userInfrastructure.Store
 }
 
-func NewService(repository *userInfrastructure.Repository) *Service {
-	return &Service{repository: repository}
+func NewService(store *userInfrastructure.Store) *Service {
+	return &Service{store: store}
 }
 
 func (s *Service) GetUsers() ([]userModel.User, error) {
-	return s.repository.FetchUsers()
+	return s.store.FetchUsers()
 }

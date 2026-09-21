@@ -7,13 +7,13 @@ import (
 )
 
 type RaceService struct {
-	repository *raceInfrastructure.Repository
+	store *raceInfrastructure.Store
 }
 
-func NewRaceService(repository *raceInfrastructure.Repository) *RaceService {
-	return &RaceService{repository: repository}
+func NewRaceService(store *raceInfrastructure.Store) *RaceService {
+	return &RaceService{store: store}
 }
 
 func (s *RaceService) GetRaces() ([]racingModel.Race, error) {
-	return s.repository.FetchRaces()
+	return s.store.FetchRaces()
 }

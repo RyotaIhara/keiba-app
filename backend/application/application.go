@@ -18,13 +18,13 @@ type Application struct {
 }
 
 func New(db *sql.DB) *Application {
-	userRepository := userInfrastructure.NewRepository(db)
-	raceRepository := raceInfrastructure.NewRepository(db)
-	raceCourseRepository := raceCourseInfrastructure.NewRepository(db)
+	userStore := userInfrastructure.NewStore(db)
+	raceStore := raceInfrastructure.NewStore(db)
+	raceCourseStore := raceCourseInfrastructure.NewStore(db)
 
 	return &Application{
-		UserService:       userService.NewService(userRepository),
-		RaceService:       racingService.NewRaceService(raceRepository),
-		RaceCourseService: racingService.NewRaceCourseService(raceCourseRepository),
+		UserService:       userService.NewService(userStore),
+		RaceService:       racingService.NewRaceService(raceStore),
+		RaceCourseService: racingService.NewRaceCourseService(raceCourseStore),
 	}
 }

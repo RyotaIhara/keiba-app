@@ -6,13 +6,13 @@ import (
 )
 
 type RaceCourseService struct {
-	repository *raceCourseInfrastructure.Repository
+	store *raceCourseInfrastructure.Store
 }
 
-func NewRaceCourseService(repository *raceCourseInfrastructure.Repository) *RaceCourseService {
-	return &RaceCourseService{repository: repository}
+func NewRaceCourseService(store *raceCourseInfrastructure.Store) *RaceCourseService {
+	return &RaceCourseService{store: store}
 }
 
 func (s *RaceCourseService) GetRaceCourses() ([]racingModel.Racecourse, error) {
-	return s.repository.FetchRaceCourses()
+	return s.store.FetchRaceCourses()
 }
