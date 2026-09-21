@@ -1,5 +1,5 @@
-// Package index
-package index
+// Package racecourse
+package racecourse
 
 import (
 	"net/http"
