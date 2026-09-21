@@ -21,6 +21,10 @@ func Routing(
 	engin.GET("/api/users", userController.Index(userService))
 	// race
 	engin.GET("/api/races", raceController.Index(raceService))
+	engin.POST("/api/races", raceController.Create(raceService))
+	engin.GET("/api/races/:id", raceController.Show(raceService))
+	engin.PUT("/api/races/:id", raceController.Update(raceService))
+	engin.DELETE("/api/races/:id", raceController.Delete(raceService))
 	// race_course
 	engin.GET("/api/race_courses", raceCourseController.Index(raceCourseService))
 }

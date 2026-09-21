@@ -139,10 +139,13 @@ sql:
 	@test -n "$(SQL)" || (echo "使用例: make sql SQL=path/to/file.sql" >&2; exit 1)
 	@test -f "$(SQL)" || (echo "SQLファイルが見つかりません: $(SQL)" >&2; exit 1)
 	docker compose exec -T mysql \
-		sh -c 'mysql -u"$$MYSQL_USER" -p"$$MYSQL_PASSWORD" "$$MYSQL_DATABASE"' \
+		sh -c 'mysql --default-character-set=utf8mb4 -u"$$MYSQL_USER" -p"$$MYSQL_PASSWORD" "$$MYSQL_DATABASE"' \
 		< "$(SQL)"
 
 sql-init:
 	$(MAKE) sql SQL=sql/schema/create_user.sql
 	$(MAKE) sql SQL=sql/schema/create_race_course.sql
 	$(MAKE) sql SQL=sql/schema/create_race.sql
+	$(MAKE) sql SQL=sql/data/insert_user_data.sql
+	$(MAKE) sql SQL=sql/data/insert_race_course_data.sql
+	$(MAKE) sql SQL=sql/data/insert_race_data.sql
