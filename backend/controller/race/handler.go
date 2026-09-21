@@ -9,8 +9,15 @@ import (
 	raceService "tmp-app-backend/service/racing"
 )
 
-func Index(c *gin.Context) {
-	response := raceService.GetRaces()
+func Index(service *raceService.RaceService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		response, err := service.GetRaces()
+		if err != nil {
+			c.Error(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch races"})
+			return
+		}
 
-	c.IndentedJSON(http.StatusOK, response)
+		c.IndentedJSON(http.StatusOK, response)
+	}
 }

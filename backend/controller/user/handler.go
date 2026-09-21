@@ -9,8 +9,15 @@ import (
 	userService "tmp-app-backend/service/user"
 )
 
-func Index(c *gin.Context) {
-	response := userService.GetUsers()
+func Index(service *userService.Service) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		response, err := service.GetUsers()
+		if err != nil {
+			c.Error(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch users"})
+			return
+		}
 
-	c.IndentedJSON(http.StatusOK, response)
+		c.IndentedJSON(http.StatusOK, response)
+	}
 }

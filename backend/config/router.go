@@ -5,21 +5,22 @@ import (
 	raceController "tmp-app-backend/controller/race"
 	raceCourseController "tmp-app-backend/controller/race_course"
 	userController "tmp-app-backend/controller/user"
+	raceService "tmp-app-backend/service/racing"
+	userService "tmp-app-backend/service/user"
 
 	"github.com/gin-gonic/gin"
 )
 
-func Routing(engin *gin.Engine) {
+func Routing(
+	engin *gin.Engine,
+	userService *userService.Service,
+	raceService *raceService.RaceService,
+	raceCourseService *raceService.RaceCourseService,
+) {
 	// user
-	engin.GET("/api/users", func(c *gin.Context) {
-		userController.Index(c)
-	})
+	engin.GET("/api/users", userController.Index(userService))
 	// race
-	engin.GET("/api/races", func(c *gin.Context) {
-		raceController.Index(c)
-	})
+	engin.GET("/api/races", raceController.Index(raceService))
 	// race_course
-	engin.GET("/api/race_courses", func(c *gin.Context) {
-		raceCourseController.Index(c)
-	})
+	engin.GET("/api/race_courses", raceCourseController.Index(raceCourseService))
 }

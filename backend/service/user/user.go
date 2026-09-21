@@ -1,28 +1,19 @@
-// Package user(Service)
+// Package user (Service)
 package user
 
 import (
+	userInfrastructure "tmp-app-backend/infrastructure/user"
 	userModel "tmp-app-backend/model/user"
 )
 
-func GetUsers() []userModel.User {
-	users := []userModel.User{
-		{
-			ID:   1,
-			Code: "test001",
-			Name: "テストユーザー001",
-		},
-		{
-			ID:   2,
-			Code: "test002",
-			Name: "テストユーザー002",
-		},
-		{
-			ID:   2,
-			Code: "test002",
-			Name: "テストユーザー002",
-		},
-	}
+type Service struct {
+	repository *userInfrastructure.Repository
+}
 
-	return users
+func NewService(repository *userInfrastructure.Repository) *Service {
+	return &Service{repository: repository}
+}
+
+func (s *Service) GetUsers() ([]userModel.User, error) {
+	return s.repository.FetchUsers()
 }

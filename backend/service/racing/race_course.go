@@ -1,23 +1,18 @@
-// Package racing(Service)
 package racing
 
 import (
+	raceCourseInfrastructure "tmp-app-backend/infrastructure/race_course"
 	racingModel "tmp-app-backend/model/racing"
 )
 
-func GetRaceCourses() []racingModel.Racecourse {
-	raceCourses := []racingModel.Racecourse{
-		{
-			ID:   1,
-			Code: "TKY",
-			Name: "東京競馬場",
-		},
-		{
-			ID:   2,
-			Code: "NAK",
-			Name: "中山競馬場",
-		},
-	}
+type RaceCourseService struct {
+	repository *raceCourseInfrastructure.Repository
+}
 
-	return raceCourses
+func NewRaceCourseService(repository *raceCourseInfrastructure.Repository) *RaceCourseService {
+	return &RaceCourseService{repository: repository}
+}
+
+func (s *RaceCourseService) GetRaceCourses() ([]racingModel.Racecourse, error) {
+	return s.repository.FetchRaceCourses()
 }
