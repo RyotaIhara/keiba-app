@@ -127,3 +127,22 @@ deployment-delete:
 service-delete:
 	kubectl delete service frontend
 	kubectl delete service backend
+
+# --------------------------------------------------
+# DB関連
+# --------------------------------------------------
+.PHONY: sql
+
+## SQLファイルをMySQLコンテナへ投入
+## 例: make sql SQL=sql/schema/create_user.sql
+sql:
+	@test -n "$(SQL)" || (echo "使用例: make sql SQL=path/to/file.sql" >&2; exit 1)
+	@test -f "$(SQL)" || (echo "SQLファイルが見つかりません: $(SQL)" >&2; exit 1)
+	docker compose exec -T mysql \
+		sh -c 'mysql -u"$$MYSQL_USER" -p"$$MYSQL_PASSWORD" "$$MYSQL_DATABASE"' \
+		< "$(SQL)"
+
+sql-init:
+	$(MAKE) sql SQL=sql/schema/create_user.sql
+	$(MAKE) sql SQL=sql/schema/create_race_course.sql
+	$(MAKE) sql SQL=sql/schema/create_race.sql
