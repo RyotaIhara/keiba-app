@@ -27,6 +27,7 @@ func scanRaceCourse(scanner interface{ Scan(...any) error }) (racingModel.Raceco
 	return raceCourse, err
 }
 
+// FetchRaceCourses 競馬場一覧取得するメソッド
 func (s *Store) FetchRaceCourses() ([]racingModel.Racecourse, error) {
 	rows, err := s.db.Query(`
 		SELECT id, code, name
@@ -56,6 +57,7 @@ func (s *Store) FetchRaceCourses() ([]racingModel.Racecourse, error) {
 	return raceCourses, nil
 }
 
+// FindRaceCourseByID IDを指定して競馬場を取得するメソッド
 func (s *Store) FindRaceCourseByID(id int64) (racingModel.Racecourse, error) {
 	row := s.db.QueryRow(`
 		SELECT id, code, name
@@ -65,6 +67,7 @@ func (s *Store) FindRaceCourseByID(id int64) (racingModel.Racecourse, error) {
 	return scanRaceCourse(row)
 }
 
+// CreateRaceCourse 競馬場を作成するメソッド
 func (s *Store) CreateRaceCourse(code, name string) (int64, error) {
 	result, err := s.db.Exec(`
 		INSERT INTO race_courses (code, name)
@@ -76,6 +79,7 @@ func (s *Store) CreateRaceCourse(code, name string) (int64, error) {
 	return result.LastInsertId()
 }
 
+// UpdateRaceCourse 競馬場を更新するメソッド
 func (s *Store) UpdateRaceCourse(id int64, code, name string) error {
 	result, err := s.db.Exec(`
 		UPDATE race_courses
@@ -96,6 +100,7 @@ func (s *Store) UpdateRaceCourse(id int64, code, name string) error {
 	return nil
 }
 
+// DeleteRaceCourse 競馬場を削除するメソッド
 func (s *Store) DeleteRaceCourse(id int64) error {
 	result, err := s.db.Exec(`DELETE FROM race_courses WHERE id = ?`, id)
 	if err != nil {

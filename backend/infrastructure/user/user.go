@@ -28,6 +28,7 @@ func scanUser(scanner interface{ Scan(...any) error }) (userModel.User, error) {
 	return user, err
 }
 
+// FetchUsers ユーザー一覧を取得するメソッド
 func (s *Store) FetchUsers() ([]userModel.User, error) {
 	rows, err := s.db.Query(`
 		SELECT id, code, name, password
@@ -57,6 +58,7 @@ func (s *Store) FetchUsers() ([]userModel.User, error) {
 	return users, nil
 }
 
+// FindUserByCodeAndPass CodeとPasswordを指定してユーザーを取得するメソッド
 func (s *Store) FindUserByCodeAndPass(
 	code string,
 	password string,
@@ -70,6 +72,7 @@ func (s *Store) FindUserByCodeAndPass(
 	return scanUser(row)
 }
 
+// FindUserByID IDを指定してユーザーを取得するメソッド
 func (s *Store) FindUserByID(id int64) (userModel.User, error) {
 	row := s.db.QueryRow(`
 		SELECT id, code, name, password
@@ -79,6 +82,7 @@ func (s *Store) FindUserByID(id int64) (userModel.User, error) {
 	return scanUser(row)
 }
 
+// CreateUser ユーザーを作成するメソッド
 func (s *Store) CreateUser(code, name, password string) (int64, error) {
 	result, err := s.db.Exec(`
 		INSERT INTO users (code, name, password)
@@ -90,6 +94,7 @@ func (s *Store) CreateUser(code, name, password string) (int64, error) {
 	return result.LastInsertId()
 }
 
+// UpdateUser ユーザーを更新するメソッド
 func (s *Store) UpdateUser(id int64, code, name string) error {
 	result, err := s.db.Exec(`
 		UPDATE users
@@ -110,6 +115,7 @@ func (s *Store) UpdateUser(id int64, code, name string) error {
 	return nil
 }
 
+// DeleteUser ユーザーを削除するメソッド
 func (s *Store) DeleteUser(id int64) error {
 	result, err := s.db.Exec(`DELETE FROM users WHERE id = ?`, id)
 	if err != nil {
