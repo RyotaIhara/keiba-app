@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import DashboardView from '@/views/DashboardView.vue'
 import RaceCourseView from '@/views/RaceCourseView.vue'
 import RaceView from '@/views/RaceView.vue'
+import RaceDetailView from '@/views/RaceDetailView.vue'
 import UserView from '@/views/UserView.vue'
 
 const router = createRouter({
@@ -27,6 +28,11 @@ const router = createRouter({
       path: '/race',
       name: 'race',
       component: RaceView,
+    },
+    {
+      path: '/race/:raceId/details',
+      name: 'race-details',
+      component: RaceDetailView,
     },
   ],
 })

@@ -4,6 +4,7 @@ import type { RaceListItem } from '@/mappers/raceMapper'
 defineProps<{ races: RaceListItem[] }>()
 const emit = defineEmits<{
   detail: [race: RaceListItem]
+  entrants: [race: RaceListItem]
   edit: [race: RaceListItem]
   delete: [race: RaceListItem]
 }>()
@@ -35,6 +36,11 @@ const emit = defineEmits<{
               class="rounded bg-gray-600 px-3 py-1.5 text-white"
               @click="emit('detail', race)">
                 詳細
+            </button>
+            <button type="button"
+              class="rounded bg-green-700 px-3 py-1.5 text-white"
+              @click="emit('entrants', race)">
+                出走一覧
             </button>
             <button type="button"
               class="rounded bg-blue-600 px-3 py-1.5 text-white"

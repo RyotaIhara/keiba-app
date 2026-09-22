@@ -10,6 +10,7 @@ defineProps<{
 
 const emit = defineEmits<{
   close: []
+  entrants: []
 }>()
 </script>
 
@@ -32,6 +33,15 @@ const emit = defineEmits<{
           閉じる
         </button>
       </div>
+
+      <button
+        v-if="race"
+        type="button"
+        class="mt-4 rounded bg-green-700 px-3 py-1.5 text-white"
+        @click="emit('entrants')"
+      >
+        出走一覧を見る
+      </button>
 
       <p v-if="isLoading" class="mt-4">詳細を読み込んでいます...</p>
       <p v-else-if="errorMessage" class="mt-4 text-red-600">

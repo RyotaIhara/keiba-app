@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 import { createRace, deleteRace, getRace, getRaces, updateRace, type ApiRace, type RaceInput } from '@/api/races'
 import LoadingMessage from '@/components/common/LoadingMessage.vue'
@@ -23,6 +24,7 @@ const detailOpen = ref(false)
 const detailRace = ref<RaceListItem | null>(null)
 const detailError = ref('')
 const isLoadingDetail = ref(false)
+const router = useRouter()
 
 async function loadRaces() {
   isLoading.value = true
@@ -70,6 +72,10 @@ function closeDetail() {
   detailOpen.value = false
 }
 
+function openEntrants(race: RaceListItem) {
+  router.push(`/race/${race.id}/details`)
+}
+
 function closeModal() { if (!isSubmitting.value) modalOpen.value = false }
 
 async function saveRace(input: RaceInput) {
@@ -98,8 +104,8 @@ async function removeRace(race: RaceListItem) {
     <LoadingMessage v-if="isLoading" />
     <p v-else-if="errorMessage" class="mt-4 text-red-600">{{ errorMessage }} <ReloadButton @reload="loadRaces" /></p>
     <p v-else-if="races.length === 0" class="mt-4">レースが見つかりませんでした。</p>
-    <RaceList v-if="!isLoading && !errorMessage && races.length > 0" class="mt-4" :races="races" @detail="openDetail" @edit="openUpdate" @delete="removeRace" />
+    <RaceList v-if="!isLoading && !errorMessage && races.length > 0" class="mt-4" :races="races" @detail="openDetail" @entrants="openEntrants" @edit="openUpdate" @delete="removeRace" />
     <RaceFormModal :open="modalOpen" :mode="modalMode" :initial-input="modalInput" :is-loading-initial="isLoadingInitial" :is-submitting="isSubmitting" :error-message="modalError" @cancel="closeModal" @submit="saveRace" />
-    <RaceDetailModal :open="detailOpen" :race="detailRace" :is-loading="isLoadingDetail" :error-message="detailError" @close="closeDetail" />
+    <RaceDetailModal :open="detailOpen" :race="detailRace" :is-loading="isLoadingDetail" :error-message="detailError" @close="closeDetail" @entrants="detailRace && openEntrants(detailRace)" />
   </div>
 </template>
