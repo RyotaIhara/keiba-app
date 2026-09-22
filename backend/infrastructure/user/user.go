@@ -69,3 +69,59 @@ func (s *Store) FindUserByCodeAndPass(
 
 	return scanUser(row)
 }
+
+func (s *Store) FindUserByID(id int64) (userModel.User, error) {
+	row := s.db.QueryRow(`
+		SELECT id, code, name, password
+		FROM users
+		WHERE id = ?
+	`, id)
+	return scanUser(row)
+}
+
+func (s *Store) CreateUser(code, name, password string) (int64, error) {
+	result, err := s.db.Exec(`
+		INSERT INTO users (code, name, password)
+		VALUES (?, ?, ?)
+	`, code, name, password)
+	if err != nil {
+		return 0, err
+	}
+	return result.LastInsertId()
+}
+
+func (s *Store) UpdateUser(id int64, code, name string) error {
+	result, err := s.db.Exec(`
+		UPDATE users
+		SET code = ?, name = ?
+		WHERE id = ?
+	`, code, name, id)
+	if err != nil {
+		return err
+	}
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if affected == 0 {
+		_, err := s.FindUserByID(id)
+		return err
+	}
+	return nil
+}
+
+func (s *Store) DeleteUser(id int64) error {
+	result, err := s.db.Exec(`DELETE FROM users WHERE id = ?`, id)
+	if err != nil {
+		return err
+	}
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if affected == 0 {
+		_, err := s.FindUserByID(id)
+		return err
+	}
+	return nil
+}

@@ -4,6 +4,11 @@ import type { UserListItem } from '@/mappers/userMapper'
 defineProps<{
   users: UserListItem[]
 }>()
+
+const emit = defineEmits<{
+  edit: [user: UserListItem]
+  delete: [user: UserListItem]
+}>()
 </script>
 
 <template>
@@ -26,7 +31,22 @@ defineProps<{
           <td class="px-4 py-2">{{ user.id }}</td>
           <td class="px-4 py-2">{{ user.code }}</td>
           <td class="px-4 py-2">{{ user.name }}</td>
-          <td class="px-4 py-2">編集 削除</td>
+          <td class="space-x-3 px-4 py-2">
+            <button
+              type="button"
+              class="rounded bg-blue-600 px-3 py-1.5 text-white"
+              @click="emit('edit', user)"
+            >
+              編集
+            </button>
+            <button
+              type="button"
+              class="rounded bg-red-600 px-3 py-1.5 text-white"
+              @click="emit('delete', user)"
+            >
+              削除
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>

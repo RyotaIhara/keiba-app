@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import IndexView from '@/views/IndexView.vue'
+import RaceCourseView from '@/views/RaceCourseView.vue'
 import UserView from '@/views/UserView.vue'
 
 const router = createRouter({
@@ -15,6 +16,11 @@ const router = createRouter({
       path: '/user',
       name: 'user',
       component: UserView,
+    },
+    {
+      path: '/race-course',
+      name: 'race-course',
+      component: RaceCourseView,
     },
   ],
 })

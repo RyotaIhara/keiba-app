@@ -16,3 +16,26 @@ func NewRaceCourseService(store *raceCourseInfrastructure.Store) *RaceCourseServ
 func (s *RaceCourseService) GetRaceCourses() ([]racingModel.Racecourse, error) {
 	return s.store.FetchRaceCourses()
 }
+
+func (s *RaceCourseService) GetRaceCourse(id int64) (racingModel.Racecourse, error) {
+	return s.store.FindRaceCourseByID(id)
+}
+
+func (s *RaceCourseService) CreateRaceCourse(code, name string) (racingModel.Racecourse, error) {
+	id, err := s.store.CreateRaceCourse(code, name)
+	if err != nil {
+		return racingModel.Racecourse{}, err
+	}
+	return s.store.FindRaceCourseByID(id)
+}
+
+func (s *RaceCourseService) UpdateRaceCourse(id int64, code, name string) (racingModel.Racecourse, error) {
+	if err := s.store.UpdateRaceCourse(id, code, name); err != nil {
+		return racingModel.Racecourse{}, err
+	}
+	return s.store.FindRaceCourseByID(id)
+}
+
+func (s *RaceCourseService) DeleteRaceCourse(id int64) error {
+	return s.store.DeleteRaceCourse(id)
+}

@@ -19,6 +19,10 @@ func Routing(
 ) {
 	// user
 	engin.GET("/api/users", userHandler.Index(userService))
+	engin.GET("/api/users/:id", userHandler.Show(userService))
+	engin.POST("/api/users", userHandler.Create(userService))
+	engin.PUT("/api/users/:id", userHandler.Update(userService))
+	engin.DELETE("/api/users/:id", userHandler.Delete(userService))
 	// race
 	engin.GET("/api/races", raceHandler.Index(raceService))
 	engin.POST("/api/races", raceHandler.Create(raceService))
@@ -27,4 +31,8 @@ func Routing(
 	engin.DELETE("/api/races/:id", raceHandler.Delete(raceService))
 	// race_course
 	engin.GET("/api/race_courses", raceCourseHandler.Index(raceCourseService))
+	engin.GET("/api/race_courses/:id", raceCourseHandler.Show(raceCourseService))
+	engin.POST("/api/race_courses", raceCourseHandler.Create(raceCourseService))
+	engin.PUT("/api/race_courses/:id", raceCourseHandler.Update(raceCourseService))
+	engin.DELETE("/api/race_courses/:id", raceCourseHandler.Delete(raceCourseService))
 }
