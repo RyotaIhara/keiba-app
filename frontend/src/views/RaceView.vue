@@ -180,7 +180,7 @@ async function removeRace(race: RaceListItem) {
   <div class="p-8">
     <h1 class="text-2xl font-bold">レースリスト</h1>
     <div class="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
-      <form class="grid gap-3 md:grid-cols-2" @submit.prevent="searchRaces">
+      <form class="grid max-w-xl gap-3" @submit.prevent="searchRaces">
         <label class="flex flex-col gap-1 text-sm text-gray-700">
           開催日
           <input
