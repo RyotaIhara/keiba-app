@@ -228,45 +228,6 @@ func (s *Store) FetchRaceDetailsByRaceID(raceID int64) ([]raceModel.RaceDetail, 
 	return details, nil
 }
 
-func (s *Store) FindRaceDetailByID(raceID, detailID int64) (raceModel.RaceDetail, error) {
-	row := s.db.QueryRow(`
-		SELECT
-			rd.id,
-			r.id,
-			r.race_date,
-			rc.id,
-			rc.code,
-			rc.name,
-			r.race_number,
-			r.race_name,
-			r.start_time,
-			r.surface,
-			r.distance,
-			r.direction,
-			r.weather,
-			r.track_condition,
-			r.race_conditions,
-			rd.horse_number,
-			rd.frame_number,
-			rd.horse_name,
-			rd.sex,
-			rd.age,
-			rd.weight,
-			rd.jockey,
-			rd.stable,
-			rd.body_weight,
-			rd.body_weight_change,
-			rd.odds,
-			rd.popularity
-		FROM race_details rd
-		INNER JOIN races r ON r.id = rd.race_id
-		INNER JOIN race_courses rc ON rc.id = r.race_course_id
-		WHERE rd.race_id = ? AND rd.id = ?
-	`, raceID, detailID)
-
-	return scanRaceDetail(row)
-}
-
 // CreateRace レース情報を作成する
 func (s *Store) CreateRace(input raceSupport.RaceInput) (int64, error) {
 	result, err := s.db.Exec(`

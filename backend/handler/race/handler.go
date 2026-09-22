@@ -28,24 +28,6 @@ func Index(service *raceService.RaceService) gin.HandlerFunc {
 	}
 }
 
-func DetailsIndex(service *raceService.RaceService) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		raceID, ok := parsePositiveID(c.Param("id"), "race_id", c)
-		if !ok {
-			return
-		}
-
-		response, err := service.GetRaceDetails(raceID)
-		if err != nil {
-			c.Error(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch race details"})
-			return
-		}
-
-		c.IndentedJSON(http.StatusOK, response)
-	}
-}
-
 type raceRequest struct {
 	RaceDate       string                   `json:"race_date" binding:"required"`
 	RaceCourseID   int64                    `json:"race_course_id" binding:"required"`
@@ -164,25 +146,17 @@ func Show(service *raceService.RaceService) gin.HandlerFunc {
 	}
 }
 
-func DetailsShow(service *raceService.RaceService) gin.HandlerFunc {
+func DetailsByID(service *raceService.RaceService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		raceID, ok := parsePositiveID(c.Param("id"), "race_id", c)
 		if !ok {
 			return
 		}
-		detailID, ok := parsePositiveID(c.Param("race_detail_id"), "race_detail_id", c)
-		if !ok {
-			return
-		}
 
-		response, err := service.GetRaceDetail(raceID, detailID)
-		if errors.Is(err, sql.ErrNoRows) {
-			c.JSON(http.StatusNotFound, gin.H{"error": "race detail not found"})
-			return
-		}
+		response, err := service.GetRaceDetails(raceID)
 		if err != nil {
 			c.Error(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch race detail"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch race details"})
 			return
 		}
 

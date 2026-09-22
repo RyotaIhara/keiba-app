@@ -27,10 +27,6 @@ func (s *RaceService) GetRaceDetails(raceID int64) ([]raceModel.RaceDetail, erro
 	return s.store.FetchRaceDetailsByRaceID(raceID)
 }
 
-func (s *RaceService) GetRaceDetail(raceID, detailID int64) (raceModel.RaceDetail, error) {
-	return s.store.FindRaceDetailByID(raceID, detailID)
-}
-
 func (s *RaceService) CreateRace(input raceSupport.RaceInput) (raceModel.Race, error) {
 	id, err := s.store.CreateRace(input)
 	if err != nil {
