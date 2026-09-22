@@ -4,6 +4,7 @@ package config
 import (
 	raceHandler "keiba-app-backend/handler/race"
 	raceCourseHandler "keiba-app-backend/handler/race_course"
+	raceDetailHandler "keiba-app-backend/handler/race_detail"
 	userHandler "keiba-app-backend/handler/user"
 	raceService "keiba-app-backend/service/racing"
 	userService "keiba-app-backend/service/user"
@@ -16,6 +17,7 @@ func Routing(
 	userService *userService.Service,
 	raceService *raceService.RaceService,
 	raceCourseService *raceService.RaceCourseService,
+	raceDetailService *raceService.RaceDetailService,
 ) {
 	// user
 	engin.GET("/api/users", userHandler.Index(userService))
@@ -29,6 +31,8 @@ func Routing(
 	engin.GET("/api/races/:id", raceHandler.Show(raceService))
 	engin.PUT("/api/races/:id", raceHandler.Update(raceService))
 	engin.DELETE("/api/races/:id", raceHandler.Delete(raceService))
+	engin.GET("/api/races/:race_id/details", raceDetailHandler.Index(raceDetailService))
+	engin.GET("/api/races/:race_id/details/:race_detail_id", raceDetailHandler.Show(raceDetailService))
 	// race_course
 	engin.GET("/api/race_courses", raceCourseHandler.Index(raceCourseService))
 	engin.GET("/api/race_courses/:id", raceCourseHandler.Show(raceCourseService))

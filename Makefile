@@ -148,6 +148,8 @@ sql-init:
 	$(MAKE) sql SQL=sql/schema/create_user.sql
 	$(MAKE) sql SQL=sql/schema/create_race_course.sql
 	$(MAKE) sql SQL=sql/schema/create_race.sql
+	$(MAKE) sql SQL=sql/schema/create_race_detail.sql
 	$(MAKE) sql SQL=sql/data/insert_user_data.sql
 	$(MAKE) sql SQL=sql/data/insert_race_course_data.sql
 	$(MAKE) sql SQL=sql/data/insert_race_data.sql
+	$(MAKE) sql SQL=sql/data/insert_race_detail_data.sql
