@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 
-import { createRace, deleteRace, getRace, getRaces, updateRace, type RaceInput } from '@/api/races'
+import { createRace, deleteRace, getRace, getRaces, updateRace, type ApiRace, type RaceInput } from '@/api/races'
 import LoadingMessage from '@/components/common/LoadingMessage.vue'
 import ReloadButton from '@/components/common/ReloadButton.vue'
 import RaceFormModal from '@/components/race/RaceFormModal.vue'
+import RaceDetailModal from '@/components/race/RaceDetailModal.vue'
 import RaceList from '@/components/race/RaceList.vue'
 import { toRaceInput, toRaceListItem, type RaceListItem } from '@/mappers/raceMapper'
 
@@ -18,6 +19,10 @@ const modalInput = ref<Partial<RaceInput>>({})
 const modalError = ref('')
 const isLoadingInitial = ref(false)
 const isSubmitting = ref(false)
+const detailOpen = ref(false)
+const detailRace = ref<RaceListItem | null>(null)
+const detailError = ref('')
+const isLoadingDetail = ref(false)
 
 async function loadRaces() {
   isLoading.value = true
@@ -43,6 +48,26 @@ async function openUpdate(race: RaceListItem) {
   try { modalInput.value = toRaceInput(await getRace(race.id)) }
   catch (error) { modalError.value = error instanceof Error ? error.message : 'レースの取得に失敗しました。' }
   finally { isLoadingInitial.value = false }
+}
+
+async function openDetail(race: RaceListItem) {
+  detailOpen.value = true
+  detailRace.value = null
+  detailError.value = ''
+  isLoadingDetail.value = true
+  try {
+    const detail: ApiRace = await getRace(race.id)
+    detailRace.value = toRaceListItem(detail)
+  } catch (error) {
+    detailError.value =
+      error instanceof Error ? error.message : 'レースの取得に失敗しました。'
+  } finally {
+    isLoadingDetail.value = false
+  }
+}
+
+function closeDetail() {
+  detailOpen.value = false
 }
 
 function closeModal() { if (!isSubmitting.value) modalOpen.value = false }
@@ -73,7 +98,8 @@ async function removeRace(race: RaceListItem) {
     <LoadingMessage v-if="isLoading" />
     <p v-else-if="errorMessage" class="mt-4 text-red-600">{{ errorMessage }} <ReloadButton @reload="loadRaces" /></p>
     <p v-else-if="races.length === 0" class="mt-4">レースが見つかりませんでした。</p>
-    <RaceList v-if="!isLoading && !errorMessage && races.length > 0" class="mt-4" :races="races" @edit="openUpdate" @delete="removeRace" />
+    <RaceList v-if="!isLoading && !errorMessage && races.length > 0" class="mt-4" :races="races" @detail="openDetail" @edit="openUpdate" @delete="removeRace" />
     <RaceFormModal :open="modalOpen" :mode="modalMode" :initial-input="modalInput" :is-loading-initial="isLoadingInitial" :is-submitting="isSubmitting" :error-message="modalError" @cancel="closeModal" @submit="saveRace" />
+    <RaceDetailModal :open="detailOpen" :race="detailRace" :is-loading="isLoadingDetail" :error-message="detailError" @close="closeDetail" />
   </div>
 </template>
