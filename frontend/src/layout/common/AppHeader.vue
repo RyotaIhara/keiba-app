@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const navigationItems = [
-  { label: 'ホーム', to: '/' },
   { label: 'ユーザー', to: '/user' },
   { label: '競馬場', to: '/race-course' },
   { label: 'レース', to: '/race' },
