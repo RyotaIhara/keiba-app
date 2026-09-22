@@ -6,10 +6,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	userService "tmp-app-backend/service/user"
+	userModel "tmp-app-backend/model/user"
 )
 
-func Index(service *userService.Service) gin.HandlerFunc {
+type userService interface {
+	GetUsers() ([]userModel.User, error)
+}
+
+func Index(service userService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		response, err := service.GetUsers()
 		if err != nil {
