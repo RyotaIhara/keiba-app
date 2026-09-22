@@ -1,4 +1,5 @@
-package racing
+// Package support
+package support
 
 import (
 	"time"

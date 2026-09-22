@@ -6,6 +6,7 @@ import (
 	"time"
 
 	racingModel "tmp-app-backend/model/racing"
+	racingSupport "tmp-app-backend/model/racing/support"
 )
 
 type Store struct {
@@ -119,7 +120,7 @@ func (s *Store) FindRaceByID(id int64) (racingModel.Race, error) {
 	return scanRace(row)
 }
 
-func (s *Store) CreateRace(input racingModel.RaceInput) (int64, error) {
+func (s *Store) CreateRace(input racingSupport.RaceInput) (int64, error) {
 	result, err := s.db.Exec(`
 		INSERT INTO races (
 			race_date,
@@ -154,7 +155,7 @@ func (s *Store) CreateRace(input racingModel.RaceInput) (int64, error) {
 	return result.LastInsertId()
 }
 
-func (s *Store) UpdateRace(id int64, input racingModel.RaceInput) error {
+func (s *Store) UpdateRace(id int64, input racingSupport.RaceInput) error {
 	result, err := s.db.Exec(`
 		UPDATE races
 		SET

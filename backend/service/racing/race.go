@@ -4,6 +4,7 @@ package racing
 import (
 	raceInfrastructure "tmp-app-backend/infrastructure/race"
 	racingModel "tmp-app-backend/model/racing"
+	racingSupport "tmp-app-backend/model/racing/support"
 )
 
 type RaceService struct {
@@ -22,7 +23,7 @@ func (s *RaceService) GetRace(id int64) (racingModel.Race, error) {
 	return s.store.FindRaceByID(id)
 }
 
-func (s *RaceService) CreateRace(input racingModel.RaceInput) (racingModel.Race, error) {
+func (s *RaceService) CreateRace(input racingSupport.RaceInput) (racingModel.Race, error) {
 	id, err := s.store.CreateRace(input)
 	if err != nil {
 		return racingModel.Race{}, err
@@ -31,7 +32,7 @@ func (s *RaceService) CreateRace(input racingModel.RaceInput) (racingModel.Race,
 	return s.store.FindRaceByID(id)
 }
 
-func (s *RaceService) UpdateRace(id int64, input racingModel.RaceInput) (racingModel.Race, error) {
+func (s *RaceService) UpdateRace(id int64, input racingSupport.RaceInput) (racingModel.Race, error) {
 	if err := s.store.UpdateRace(id, input); err != nil {
 		return racingModel.Race{}, err
 	}

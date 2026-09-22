@@ -10,7 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	racingModel "tmp-app-backend/model/racing"
+	racingSupport "tmp-app-backend/model/racing/support"
 	raceTypes "tmp-app-backend/model/racing/types/race"
 	raceService "tmp-app-backend/service/racing"
 )
@@ -42,40 +42,40 @@ type raceRequest struct {
 	RaceConditions string                   `json:"race_conditions" binding:"required"`
 }
 
-func parseRaceRequest(request raceRequest) (racingModel.RaceInput, error) {
+func parseRaceRequest(request raceRequest) (racingSupport.RaceInput, error) {
 	raceDate, err := time.Parse("2006-01-02", request.RaceDate)
 	if err != nil {
-		return racingModel.RaceInput{}, errors.New("race_date must use YYYY-MM-DD")
+		return racingSupport.RaceInput{}, errors.New("race_date must use YYYY-MM-DD")
 	}
 
 	startTime, err := time.Parse("15:04:05", request.StartTime)
 	if err != nil {
-		return racingModel.RaceInput{}, errors.New("start_time must use HH:MM:SS")
+		return racingSupport.RaceInput{}, errors.New("start_time must use HH:MM:SS")
 	}
 
 	if request.RaceCourseID <= 0 || request.RaceNumber <= 0 || request.Distance <= 0 {
-		return racingModel.RaceInput{}, errors.New("race_course_id, race_number, and distance must be positive")
+		return racingSupport.RaceInput{}, errors.New("race_course_id, race_number, and distance must be positive")
 	}
 	if request.Surface != raceTypes.SurfaceTurf && request.Surface != raceTypes.SurfaceDirt {
-		return racingModel.RaceInput{}, errors.New("invalid surface")
+		return racingSupport.RaceInput{}, errors.New("invalid surface")
 	}
 	if request.Direction != raceTypes.DirectionRight && request.Direction != raceTypes.DirectionLeft {
-		return racingModel.RaceInput{}, errors.New("invalid direction")
+		return racingSupport.RaceInput{}, errors.New("invalid direction")
 	}
 	if request.Weather != raceTypes.WeatherSunny &&
 		request.Weather != raceTypes.WeatherCloudy &&
 		request.Weather != raceTypes.WeatherRainy &&
 		request.Weather != raceTypes.WeatherSnowy {
-		return racingModel.RaceInput{}, errors.New("invalid weather")
+		return racingSupport.RaceInput{}, errors.New("invalid weather")
 	}
 	if request.TrackCondition != raceTypes.TrackConditionFirm &&
 		request.TrackCondition != raceTypes.TrackConditionGood &&
 		request.TrackCondition != raceTypes.TrackConditionYield &&
 		request.TrackCondition != raceTypes.TrackConditionSoft {
-		return racingModel.RaceInput{}, errors.New("invalid track_condition")
+		return racingSupport.RaceInput{}, errors.New("invalid track_condition")
 	}
 
-	return racingModel.RaceInput{
+	return racingSupport.RaceInput{
 		RaceDate:       raceDate,
 		RaceCourseID:   request.RaceCourseID,
 		RaceNumber:     request.RaceNumber,
@@ -99,17 +99,17 @@ func parseID(c *gin.Context) (int64, bool) {
 	return id, true
 }
 
-func bindRaceRequest(c *gin.Context) (racingModel.RaceInput, bool) {
+func bindRaceRequest(c *gin.Context) (racingSupport.RaceInput, bool) {
 	var request raceRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return racingModel.RaceInput{}, false
+		return racingSupport.RaceInput{}, false
 	}
 
 	input, err := parseRaceRequest(request)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return racingModel.RaceInput{}, false
+		return racingSupport.RaceInput{}, false
 	}
 	return input, true
 }
