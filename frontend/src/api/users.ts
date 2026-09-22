@@ -31,7 +31,8 @@ export async function getUsers(): Promise<ApiUser[]> {
     throw new Error(`ユーザーの取得に失敗しました: ${response.status}`)
   }
 
-  return response.json() as Promise<ApiUser[]>
+  const users = (await response.json()) as ApiUser[] | null
+  return users ?? []
 }
 
 async function request(url: string, options: RequestInit, errorMessage: string) {

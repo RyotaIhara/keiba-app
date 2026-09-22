@@ -50,5 +50,6 @@ async function request(url: string): Promise<Response> {
 
 export async function getRaceDetails(raceId: number): Promise<ApiRaceDetail[]> {
   const response = await request(`${apiBaseUrl}/api/races/${raceId}/details`)
-  return response.json() as Promise<ApiRaceDetail[]>
+  const details = (await response.json()) as ApiRaceDetail[] | null
+  return details ?? []
 }

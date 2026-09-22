@@ -45,7 +45,8 @@ export async function getRaceCourses(): Promise<ApiRaceCourse[]> {
     { method: 'GET' },
     '競馬場の取得に失敗しました',
   )
-  return response.json() as Promise<ApiRaceCourse[]>
+  const raceCourses = (await response.json()) as ApiRaceCourse[] | null
+  return raceCourses ?? []
 }
 
 export async function getRaceCourse(id: number): Promise<ApiRaceCourse> {
