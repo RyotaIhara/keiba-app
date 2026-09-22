@@ -2,11 +2,11 @@
 package config
 
 import (
-	raceHandler "tmp-app-backend/handler/race"
-	raceCourseHandler "tmp-app-backend/handler/race_course"
-	userHandler "tmp-app-backend/handler/user"
-	raceService "tmp-app-backend/service/racing"
-	userService "tmp-app-backend/service/user"
+	raceHandler "keiba-app-backend/handler/race"
+	raceCourseHandler "keiba-app-backend/handler/race_course"
+	userHandler "keiba-app-backend/handler/user"
+	raceService "keiba-app-backend/service/racing"
+	userService "keiba-app-backend/service/user"
 
 	"github.com/gin-gonic/gin"
 )

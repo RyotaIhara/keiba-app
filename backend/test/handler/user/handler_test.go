@@ -9,8 +9,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	userHandler "tmp-app-backend/handler/user"
-	userModel "tmp-app-backend/model/user"
+	userHandler "keiba-app-backend/handler/user"
+	userModel "keiba-app-backend/model/user"
 )
 
 type mockUserService struct {

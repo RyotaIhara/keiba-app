@@ -2,9 +2,9 @@
 package racing
 
 import (
-	raceInfrastructure "tmp-app-backend/infrastructure/race"
-	racingModel "tmp-app-backend/model/racing"
-	racingSupport "tmp-app-backend/model/racing/support"
+	raceInfrastructure "keiba-app-backend/infrastructure/race"
+	racingModel "keiba-app-backend/model/racing"
+	racingSupport "keiba-app-backend/model/racing/support"
 )
 
 type RaceService struct {

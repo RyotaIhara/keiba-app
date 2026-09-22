@@ -4,7 +4,7 @@ package user
 import (
 	"database/sql"
 
-	userModel "tmp-app-backend/model/user"
+	userModel "keiba-app-backend/model/user"
 )
 
 type Store struct {

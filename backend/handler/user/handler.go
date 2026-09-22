@@ -9,7 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	userModel "tmp-app-backend/model/user"
+	userModel "keiba-app-backend/model/user"
 )
 
 type listUserService interface {

@@ -9,7 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	racingModel "tmp-app-backend/model/racing"
+	racingModel "keiba-app-backend/model/racing"
 )
 
 type raceCourseService interface {

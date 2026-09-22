@@ -10,9 +10,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	racingSupport "tmp-app-backend/model/racing/support"
-	raceTypes "tmp-app-backend/model/racing/types/race"
-	raceService "tmp-app-backend/service/racing"
+	racingSupport "keiba-app-backend/model/racing/support"
+	raceTypes "keiba-app-backend/model/racing/types/race"
+	raceService "keiba-app-backend/service/racing"
 )
 
 func Index(service *raceService.RaceService) gin.HandlerFunc {

@@ -141,6 +141,6 @@ Compose の MySQL は環境変数 `MYSQL_ROOT_PASSWORD`、`MYSQL_DATABASE`、`MY
 
 ### Kubernetes / kind
 
-`k8s/` には frontend/backend の Deployment と ClusterIP Service があります。どちらもレプリカ数は 1 で、イメージは `tmp-app-frontend:latest` と `tmp-app-backend:latest` です。Makefile の `kind-load` でイメージを kind クラスターにロードし、`kind-deploy` でリソースを適用します。
+`k8s/` には frontend/backend の Deployment と ClusterIP Service があります。どちらもレプリカ数は 1 で、イメージは `keiba-app-frontend:latest` と `keiba-app-backend:latest` です。Makefile の `kind-load` でイメージを kind クラスターにロードし、`kind-deploy` でリソースを適用します。
 
 現状の Kubernetes マニフェストには MySQL の Deployment/Service、backend Deployment の DB接続用環境変数、frontend Deployment の `VITE_API_BASE_URL` が定義されていません。そのため、これらのマニフェストだけではバックエンドが DB に接続できず、フロントエンドから接続するAPI URLも環境に合わせて注入できません。Kubernetesで利用する場合は、DBと環境変数を別途用意し、フロントエンドのビルド時にAPIのベースURLを設定する必要があります。Service はどちらも `ClusterIP` のため、ローカルブラウザからアクセスする場合は `kubectl port-forward` が必要です。

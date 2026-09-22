@@ -4,7 +4,7 @@ package racecourse
 import (
 	"database/sql"
 
-	racingModel "tmp-app-backend/model/racing"
+	racingModel "keiba-app-backend/model/racing"
 )
 
 type Store struct {

@@ -6,9 +6,9 @@ import (
 	"os"
 	"strings"
 
-	"tmp-app-backend/application"
-	"tmp-app-backend/config"
-	"tmp-app-backend/infrastructure/database"
+	"keiba-app-backend/application"
+	"keiba-app-backend/config"
+	"keiba-app-backend/infrastructure/database"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"

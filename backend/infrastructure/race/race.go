@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"time"
 
-	racingModel "tmp-app-backend/model/racing"
-	racingSupport "tmp-app-backend/model/racing/support"
+	racingModel "keiba-app-backend/model/racing"
+	racingSupport "keiba-app-backend/model/racing/support"
 )
 
 type Store struct {

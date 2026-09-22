@@ -11,50 +11,50 @@ install-frontend:
 COMPOSE=docker compose --env-file .env.local
 
 display-images:
-	docker images | grep tmp-app
+	docker images | grep keiba-app
 
 build-frontend:
-	docker build -t tmp-app-frontend:latest ./frontend
+	docker build -t keiba-app-frontend:latest ./frontend
 
 run-frontend: build-frontend
 	docker run -d --rm \
-		--name tmp-app-frontend \
+		--name keiba-app-frontend \
 		-p 5173:5173 \
 		-v "$(CURDIR)/frontend:/app" \
 		-v /app/node_modules \
-		tmp-app-frontend
+		keiba-app-frontend
 
 remove-frontend:
-	docker rm -f tmp-app-frontend
+	docker rm -f keiba-app-frontend
 
 build-backend:
-	docker build -t tmp-app-backend:latest ./backend
+	docker build -t keiba-app-backend:latest ./backend
 
 run-backend: build-backend
 	docker run -d --rm \
-		--name tmp-app-backend \
+		--name keiba-app-backend \
 		-p 3000:3000 \
 		-v "$(CURDIR)/backend:/app" \
-		tmp-app-backend
+		keiba-app-backend
 
 remove-backend:
-	docker rm -f tmp-app-backend
+	docker rm -f keiba-app-backend
 
 kind-load: build-frontend build-backend
-	kind load docker-image tmp-app-frontend:latest --name tmp-app
-	kind load docker-image tmp-app-backend:latest --name tmp-app
+	kind load docker-image keiba-app-frontend:latest --name keiba-app
+	kind load docker-image keiba-app-backend:latest --name keiba-app
 
 kind-deploy: kind-load
 	kubectl apply -k k8s
-	kubectl rollout restart deployment/frontend deployment/backend -n tmp-app
+	kubectl rollout restart deployment/frontend deployment/backend -n keiba-app
 
 kind-status:
-	kubectl get pods,services -n tmp-app
+	kubectl get pods,services -n keiba-app
 
 # --------------------------------------------------
 # Kubernetis関連
 # --------------------------------------------------
-APP_NAME=tmp-app
+APP_NAME=keiba-app
 
 kind-create:
 	kind create cluster --name $(APP_NAME)
@@ -69,7 +69,7 @@ services:
 	kubectl get svc
 
 # backend（backend-upコマンドで問題なし）
-BACKEND_IMAGE=tmp-app-backend:latest
+BACKEND_IMAGE=keiba-app-backend:latest
 
 backend-build:
 	docker build -t $(BACKEND_IMAGE) ./backend
@@ -96,7 +96,7 @@ backend-forward-bg-stop:
 	rm -f /tmp/backend-port-forward.pid
 
 # frontend（frontend-upコマンドで問題なし）
-FRONTEND_IMAGE=tmp-app-frontend:latest
+FRONTEND_IMAGE=keiba-app-frontend:latest
 
 frontend-build:
 	docker build -t $(FRONTEND_IMAGE) ./frontend

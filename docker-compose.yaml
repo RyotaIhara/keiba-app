@@ -1,8 +1,10 @@
 # docker-composeはローカルだけ利用する想定。
+name: keiba-app
+
 services:
   mysql:
     image: mysql:8.4
-    container_name: tmp-app-mysql
+    container_name: keiba-app-mysql
     env_file:
       - .env.local
     volumes:
@@ -22,7 +24,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: tmp-app-backend
+    container_name: keiba-app-backend
     ports:
       - "3000:3000"
     env_file:
@@ -42,7 +44,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: tmp-app-frontend
+    container_name: keiba-app-frontend
     ports:
       - "5173:5173"
     env_file:

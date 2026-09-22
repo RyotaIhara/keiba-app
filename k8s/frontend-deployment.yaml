@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: tmp-app-frontend:latest
+          image: keiba-app-frontend:latest
           imagePullPolicy: IfNotPresent
 
           ports:

@@ -1,4 +1,4 @@
-module tmp-app-backend
+module keiba-app-backend
 
 go 1.26.0
 

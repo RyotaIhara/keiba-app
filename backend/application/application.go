@@ -4,11 +4,11 @@ package application
 import (
 	"database/sql"
 
-	raceInfrastructure "tmp-app-backend/infrastructure/race"
-	raceCourseInfrastructure "tmp-app-backend/infrastructure/race_course"
-	userInfrastructure "tmp-app-backend/infrastructure/user"
-	racingService "tmp-app-backend/service/racing"
-	userService "tmp-app-backend/service/user"
+	raceInfrastructure "keiba-app-backend/infrastructure/race"
+	raceCourseInfrastructure "keiba-app-backend/infrastructure/race_course"
+	userInfrastructure "keiba-app-backend/infrastructure/user"
+	racingService "keiba-app-backend/service/racing"
+	userService "keiba-app-backend/service/user"
 )
 
 type Application struct {

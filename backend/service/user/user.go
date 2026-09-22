@@ -2,8 +2,8 @@
 package user
 
 import (
-	userInfrastructure "tmp-app-backend/infrastructure/user"
-	userModel "tmp-app-backend/model/user"
+	userInfrastructure "keiba-app-backend/infrastructure/user"
+	userModel "keiba-app-backend/model/user"
 )
 
 type Service struct {

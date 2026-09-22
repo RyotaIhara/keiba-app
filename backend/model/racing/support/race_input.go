@@ -4,7 +4,7 @@ package support
 import (
 	"time"
 
-	raceTypes "tmp-app-backend/model/racing/types/race"
+	raceTypes "keiba-app-backend/model/racing/types/race"
 )
 
 type RaceInput struct {
