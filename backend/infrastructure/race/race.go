@@ -3,6 +3,7 @@ package race
 
 import (
 	"database/sql"
+	"strings"
 	"time"
 
 	raceModel "keiba-app-backend/model/race"
@@ -146,6 +147,65 @@ func (s *Store) FetchRaces() ([]raceModel.Race, error) {
 	return races, nil
 }
 
+// SearchRaces 検索条件を指定してレース一覧を取得するメソッド
+func (s *Store) SearchRaces(input raceSupport.RaceSearchInput) ([]raceModel.Race, error) {
+	query := `
+		SELECT
+			r.id,
+			r.race_date,
+			rc.id,
+			rc.code,
+			rc.name,
+			r.race_number,
+			r.race_name,
+			r.start_time,
+			r.surface,
+			r.distance,
+			r.direction,
+			r.weather,
+			r.track_condition,
+			r.race_conditions
+		FROM races r
+		INNER JOIN race_courses rc ON rc.id = r.race_course_id
+	`
+	conditions := make([]string, 0, 2)
+	args := make([]any, 0, 2)
+
+	if input.RaceDate != nil {
+		conditions = append(conditions, "r.race_date = ?")
+		args = append(args, *input.RaceDate)
+	}
+	if input.RaceCourseID != nil {
+		conditions = append(conditions, "r.race_course_id = ?")
+		args = append(args, *input.RaceCourseID)
+	}
+
+	if len(conditions) > 0 {
+		query += " WHERE " + strings.Join(conditions, " AND ")
+	}
+	query += " ORDER BY r.race_date, r.race_number, r.id"
+
+	rows, err := s.db.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var races []raceModel.Race
+	for rows.Next() {
+		race, err := scanRace(rows)
+		if err != nil {
+			return nil, err
+		}
+		races = append(races, race)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return races, nil
+}
+
 // FindRaceByID IDを指定してレース情報を取得するメソッド
 func (s *Store) FindRaceByID(id int64) (raceModel.Race, error) {
 	row := s.db.QueryRow(`
@@ -172,6 +232,7 @@ func (s *Store) FindRaceByID(id int64) (raceModel.Race, error) {
 	return scanRace(row)
 }
 
+// FetchRaceDetailsByRaceID IDを指定してDetails一覧を取得するメソッド
 func (s *Store) FetchRaceDetailsByRaceID(raceID int64) ([]raceModel.RaceDetail, error) {
 	rows, err := s.db.Query(`
 		SELECT

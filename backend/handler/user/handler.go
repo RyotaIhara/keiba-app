@@ -12,28 +12,12 @@ import (
 	userModel "keiba-app-backend/model/user"
 )
 
-type listUserService interface {
-	GetUsers() ([]userModel.User, error)
-}
-
 type userService interface {
+	GetUsers() ([]userModel.User, error)
 	GetUser(id int64) (userModel.User, error)
 	CreateUser(code, name, password string) (userModel.User, error)
 	UpdateUser(id int64, code, name string) (userModel.User, error)
 	DeleteUser(id int64) error
-}
-
-func Index(service listUserService) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		response, err := service.GetUsers()
-		if err != nil {
-			c.Error(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch users"})
-			return
-		}
-
-		c.IndentedJSON(http.StatusOK, response)
-	}
 }
 
 type createRequest struct {
@@ -47,15 +31,21 @@ type updateRequest struct {
 	Name string `json:"name" binding:"required"`
 }
 
-func parseID(c *gin.Context) (int64, bool) {
-	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err != nil || id <= 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "id must be a positive integer"})
-		return 0, false
+// Index ユーザー一覧を取得するハンドラ
+func Index(service userService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		response, err := service.GetUsers()
+		if err != nil {
+			c.Error(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch users"})
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, response)
 	}
-	return id, true
 }
 
+// Show 指定されたIDのユーザーを取得するハンドラ
 func Show(service userService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, ok := parseID(c)
@@ -78,6 +68,7 @@ func Show(service userService) gin.HandlerFunc {
 	}
 }
 
+// Create ユーザーを作成するハンドラ
 func Create(service userService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var request createRequest
@@ -97,6 +88,7 @@ func Create(service userService) gin.HandlerFunc {
 	}
 }
 
+// Update 指定されたIDのユーザーを更新するハンドラ
 func Update(service userService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, ok := parseID(c)
@@ -125,6 +117,7 @@ func Update(service userService) gin.HandlerFunc {
 	}
 }
 
+// Delete 指定されたIDのユーザーを削除するハンドラ
 func Delete(service userService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, ok := parseID(c)
@@ -145,4 +138,14 @@ func Delete(service userService) gin.HandlerFunc {
 
 		c.Status(http.StatusNoContent)
 	}
+}
+
+// parseID パスパラメータからユーザーIDを解析する
+func parseID(c *gin.Context) (int64, bool) {
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil || id <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "id must be a positive integer"})
+		return 0, false
+	}
+	return id, true
 }

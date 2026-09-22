@@ -6,6 +6,7 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -13,21 +14,10 @@ import (
 	racingSupport "keiba-app-backend/model/race/support"
 	raceTypes "keiba-app-backend/model/race/types"
 	raceService "keiba-app-backend/service/race"
+	raceSearchService "keiba-app-backend/service/race_search"
 )
 
-func Index(service *raceService.RaceService) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		response, err := service.GetRaces()
-		if err != nil {
-			c.Error(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch races"})
-			return
-		}
-
-		c.IndentedJSON(http.StatusOK, response)
-	}
-}
-
+// レース情報を登録・更新するようのリクエスト
 type raceRequest struct {
 	RaceDate       string                   `json:"race_date" binding:"required"`
 	RaceCourseID   int64                    `json:"race_course_id" binding:"required"`
@@ -42,6 +32,159 @@ type raceRequest struct {
 	RaceConditions string                   `json:"race_conditions" binding:"required"`
 }
 
+// Index レース一覧を検索条件付きで取得するハンドラ
+func Index(service *raceSearchService.SearchService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		input, err := parseRaceSearchInput(c)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		response, err := service.SearchRaces(input)
+		if err != nil {
+			c.Error(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to search races"})
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, response)
+	}
+}
+
+// Show 指定されたIDのレースを取得するハンドラ
+func Show(service *raceService.RaceService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id, ok := parseID(c)
+		if !ok {
+			return
+		}
+
+		response, err := service.GetRace(id)
+		if errors.Is(err, sql.ErrNoRows) {
+			c.JSON(http.StatusNotFound, gin.H{"error": "race not found"})
+			return
+		}
+		if err != nil {
+			c.Error(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch race"})
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, response)
+	}
+}
+
+// DetailsByID 指定されたレースの出走馬一覧を取得するハンドラ
+func DetailsByID(service *raceService.RaceService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		raceID, ok := parsePositiveID(c.Param("id"), "race_id", c)
+		if !ok {
+			return
+		}
+
+		response, err := service.GetRaceDetails(raceID)
+		if err != nil {
+			c.Error(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch race details"})
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, response)
+	}
+}
+
+// Create レースを作成するハンドラ
+func Create(service *raceService.RaceService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		input, ok := bindRaceRequest(c)
+		if !ok {
+			return
+		}
+
+		response, err := service.CreateRace(input)
+		if err != nil {
+			c.Error(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create race"})
+			return
+		}
+
+		c.IndentedJSON(http.StatusCreated, response)
+	}
+}
+
+// Update 指定されたIDのレースを更新するハンドラ
+func Update(service *raceService.RaceService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id, ok := parseID(c)
+		if !ok {
+			return
+		}
+		input, ok := bindRaceRequest(c)
+		if !ok {
+			return
+		}
+
+		response, err := service.UpdateRace(id, input)
+		if errors.Is(err, sql.ErrNoRows) {
+			c.JSON(http.StatusNotFound, gin.H{"error": "race not found"})
+			return
+		}
+		if err != nil {
+			c.Error(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update race"})
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, response)
+	}
+}
+
+// Delete 指定されたIDのレースを削除するハンドラ
+func Delete(service *raceService.RaceService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id, ok := parseID(c)
+		if !ok {
+			return
+		}
+
+		err := service.DeleteRace(id)
+		if errors.Is(err, sql.ErrNoRows) {
+			c.JSON(http.StatusNotFound, gin.H{"error": "race not found"})
+			return
+		}
+		if err != nil {
+			c.Error(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to delete race"})
+			return
+		}
+
+		c.Status(http.StatusNoContent)
+	}
+}
+
+// parseRaceSearchInput レース一覧検索用のクエリパラメータを解析する
+func parseRaceSearchInput(c *gin.Context) (racingSupport.RaceSearchInput, error) {
+	input := racingSupport.RaceSearchInput{}
+
+	if value := strings.TrimSpace(c.Query("race_date")); value != "" {
+		raceDate, err := time.Parse("2006-01-02", value)
+		if err != nil {
+			return racingSupport.RaceSearchInput{}, errors.New("race_date must use YYYY-MM-DD")
+		}
+		input.RaceDate = &raceDate
+	}
+	if value := strings.TrimSpace(c.Query("race_course_id")); value != "" {
+		raceCourseID, err := strconv.ParseInt(value, 10, 64)
+		if err != nil || raceCourseID <= 0 {
+			return racingSupport.RaceSearchInput{}, errors.New("race_course_id must be a positive integer")
+		}
+		input.RaceCourseID = &raceCourseID
+	}
+	return input, nil
+}
+
+// parseRaceRequest レース登録・更新リクエストを入力モデルへ変換する
 func parseRaceRequest(request raceRequest) (racingSupport.RaceInput, error) {
 	raceDate, err := time.Parse("2006-01-02", request.RaceDate)
 	if err != nil {
@@ -90,6 +233,7 @@ func parseRaceRequest(request raceRequest) (racingSupport.RaceInput, error) {
 	}, nil
 }
 
+// parseID パスパラメータからレースIDを解析する
 func parseID(c *gin.Context) (int64, bool) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil || id <= 0 {
@@ -100,6 +244,7 @@ func parseID(c *gin.Context) (int64, bool) {
 	return id, true
 }
 
+// parsePositiveID 指定された名前のIDパラメータを解析する
 func parsePositiveID(value, name string, c *gin.Context) (int64, bool) {
 	id, err := strconv.ParseInt(value, 10, 64)
 	if err != nil || id <= 0 {
@@ -109,6 +254,7 @@ func parsePositiveID(value, name string, c *gin.Context) (int64, bool) {
 	return id, true
 }
 
+// bindRaceRequest JSONリクエストを解析してレース入力モデルを生成する
 func bindRaceRequest(c *gin.Context) (racingSupport.RaceInput, bool) {
 	var request raceRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -122,110 +268,4 @@ func bindRaceRequest(c *gin.Context) (racingSupport.RaceInput, bool) {
 		return racingSupport.RaceInput{}, false
 	}
 	return input, true
-}
-
-func Show(service *raceService.RaceService) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		id, ok := parseID(c)
-		if !ok {
-			return
-		}
-
-		response, err := service.GetRace(id)
-		if errors.Is(err, sql.ErrNoRows) {
-			c.JSON(http.StatusNotFound, gin.H{"error": "race not found"})
-			return
-		}
-		if err != nil {
-			c.Error(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch race"})
-			return
-		}
-
-		c.IndentedJSON(http.StatusOK, response)
-	}
-}
-
-func DetailsByID(service *raceService.RaceService) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		raceID, ok := parsePositiveID(c.Param("id"), "race_id", c)
-		if !ok {
-			return
-		}
-
-		response, err := service.GetRaceDetails(raceID)
-		if err != nil {
-			c.Error(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch race details"})
-			return
-		}
-
-		c.IndentedJSON(http.StatusOK, response)
-	}
-}
-
-func Create(service *raceService.RaceService) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		input, ok := bindRaceRequest(c)
-		if !ok {
-			return
-		}
-
-		response, err := service.CreateRace(input)
-		if err != nil {
-			c.Error(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create race"})
-			return
-		}
-
-		c.IndentedJSON(http.StatusCreated, response)
-	}
-}
-
-func Update(service *raceService.RaceService) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		id, ok := parseID(c)
-		if !ok {
-			return
-		}
-		input, ok := bindRaceRequest(c)
-		if !ok {
-			return
-		}
-
-		response, err := service.UpdateRace(id, input)
-		if errors.Is(err, sql.ErrNoRows) {
-			c.JSON(http.StatusNotFound, gin.H{"error": "race not found"})
-			return
-		}
-		if err != nil {
-			c.Error(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update race"})
-			return
-		}
-
-		c.IndentedJSON(http.StatusOK, response)
-	}
-}
-
-func Delete(service *raceService.RaceService) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		id, ok := parseID(c)
-		if !ok {
-			return
-		}
-
-		err := service.DeleteRace(id)
-		if errors.Is(err, sql.ErrNoRows) {
-			c.JSON(http.StatusNotFound, gin.H{"error": "race not found"})
-			return
-		}
-		if err != nil {
-			c.Error(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to delete race"})
-			return
-		}
-
-		c.Status(http.StatusNoContent)
-	}
 }

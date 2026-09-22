@@ -20,3 +20,8 @@ type RaceInput struct {
 	TrackCondition types.TrackCondition
 	RaceConditions string
 }
+
+type RaceSearchInput struct {
+	RaceDate     *time.Time
+	RaceCourseID *int64
+}

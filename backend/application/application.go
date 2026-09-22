@@ -9,12 +9,14 @@ import (
 	userInfrastructure "keiba-app-backend/infrastructure/user"
 	raceService "keiba-app-backend/service/race"
 	raceCourseService "keiba-app-backend/service/race_course"
+	raceSearchService "keiba-app-backend/service/race_search"
 	userService "keiba-app-backend/service/user"
 )
 
 type Application struct {
 	UserService       *userService.Service
 	RaceService       *raceService.RaceService
+	RaceSearchService *raceSearchService.SearchService
 	RaceCourseService *raceCourseService.RaceCourseService
 }
 
@@ -26,6 +28,7 @@ func New(db *sql.DB) *Application {
 	return &Application{
 		UserService:       userService.NewService(userStore),
 		RaceService:       raceService.NewRaceService(raceStore),
+		RaceSearchService: raceSearchService.NewSearchService(raceStore),
 		RaceCourseService: raceCourseService.NewRaceCourseService(raceCourseStore),
 	}
 }

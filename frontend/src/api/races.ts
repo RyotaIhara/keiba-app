@@ -33,6 +33,11 @@ export interface RaceInput {
   race_conditions: string
 }
 
+export interface RaceSearchParams {
+  race_date?: string
+  race_course_id?: number
+}
+
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, '')
 
 if (!apiBaseUrl) {
@@ -41,11 +46,7 @@ if (!apiBaseUrl) {
 
 const RACES_API_URL = `${apiBaseUrl}/api/races`
 
-async function request(
-  url: string,
-  options: RequestInit,
-  errorMessage: string,
-): Promise<Response> {
+async function request(url: string, options: RequestInit, errorMessage: string): Promise<Response> {
   const response = await fetch(url, {
     ...options,
     headers: {
@@ -58,13 +59,28 @@ async function request(
   return response
 }
 
-export async function getRaces(): Promise<ApiRace[]> {
-  const response = await request(RACES_API_URL, { method: 'GET' }, 'レースの取得に失敗しました')
+export async function getRaces(params: RaceSearchParams = {}): Promise<ApiRace[]> {
+  const searchParams = new URLSearchParams()
+  if (params.race_date) searchParams.set('race_date', params.race_date)
+  if (params.race_course_id !== undefined) {
+    searchParams.set('race_course_id', String(params.race_course_id))
+  }
+
+  const query = searchParams.toString()
+  const response = await request(
+    query ? `${RACES_API_URL}?${query}` : RACES_API_URL,
+    { method: 'GET' },
+    'レースの取得に失敗しました',
+  )
   return response.json() as Promise<ApiRace[]>
 }
 
 export async function getRace(id: number): Promise<ApiRace> {
-  const response = await request(`${RACES_API_URL}/${id}`, { method: 'GET' }, 'レースの取得に失敗しました')
+  const response = await request(
+    `${RACES_API_URL}/${id}`,
+    { method: 'GET' },
+    'レースの取得に失敗しました',
+  )
   return response.json() as Promise<ApiRace>
 }
 

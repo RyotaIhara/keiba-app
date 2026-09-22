@@ -22,6 +22,22 @@ func (m mockUserService) GetUsers() ([]userModel.User, error) {
 	return m.users, m.err
 }
 
+func (mockUserService) GetUser(int64) (userModel.User, error) {
+	return userModel.User{}, nil
+}
+
+func (mockUserService) CreateUser(string, string, string) (userModel.User, error) {
+	return userModel.User{}, nil
+}
+
+func (mockUserService) UpdateUser(int64, string, string) (userModel.User, error) {
+	return userModel.User{}, nil
+}
+
+func (mockUserService) DeleteUser(int64) error {
+	return nil
+}
+
 func newTestContext() (*gin.Context, *httptest.ResponseRecorder) {
 	rec := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(rec)

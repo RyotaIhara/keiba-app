@@ -20,6 +20,12 @@ type raceCourseService interface {
 	DeleteRaceCourse(id int64) error
 }
 
+type request struct {
+	Code string `json:"code" binding:"required"`
+	Name string `json:"name" binding:"required"`
+}
+
+// Index 競馬場一覧を取得するハンドラ
 func Index(service raceCourseService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		response, err := service.GetRaceCourses()
@@ -33,20 +39,7 @@ func Index(service raceCourseService) gin.HandlerFunc {
 	}
 }
 
-type request struct {
-	Code string `json:"code" binding:"required"`
-	Name string `json:"name" binding:"required"`
-}
-
-func parseID(c *gin.Context) (int64, bool) {
-	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err != nil || id <= 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "id must be a positive integer"})
-		return 0, false
-	}
-	return id, true
-}
-
+// Show 指定されたIDの競馬場を取得するハンドラ
 func Show(service raceCourseService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, ok := parseID(c)
@@ -67,6 +60,7 @@ func Show(service raceCourseService) gin.HandlerFunc {
 	}
 }
 
+// Create 競馬場を作成するハンドラ
 func Create(service raceCourseService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req request
@@ -84,6 +78,7 @@ func Create(service raceCourseService) gin.HandlerFunc {
 	}
 }
 
+// Update 指定されたIDの競馬場を更新するハンドラ
 func Update(service raceCourseService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, ok := parseID(c)
@@ -109,6 +104,7 @@ func Update(service raceCourseService) gin.HandlerFunc {
 	}
 }
 
+// Delete 指定されたIDの競馬場を削除するハンドラ
 func Delete(service raceCourseService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, ok := parseID(c)
@@ -127,4 +123,14 @@ func Delete(service raceCourseService) gin.HandlerFunc {
 		}
 		c.Status(http.StatusNoContent)
 	}
+}
+
+// parseID パスパラメータから競馬場IDを解析する
+func parseID(c *gin.Context) (int64, bool) {
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil || id <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "id must be a positive integer"})
+		return 0, false
+	}
+	return id, true
 }

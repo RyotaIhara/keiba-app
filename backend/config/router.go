@@ -21,7 +21,7 @@ func Routing(
 	engin.PUT("/api/users/:id", userHandler.Update(app.UserService))
 	engin.DELETE("/api/users/:id", userHandler.Delete(app.UserService))
 	// race
-	engin.GET("/api/races", raceHandler.Index(app.RaceService))
+	engin.GET("/api/races", raceHandler.Index(app.RaceSearchService))
 	engin.GET("/api/races/:id", raceHandler.Show(app.RaceService))
 	engin.GET("/api/races/:id/details", raceHandler.DetailsByID(app.RaceService))
 	engin.POST("/api/races", raceHandler.Create(app.RaceService))
