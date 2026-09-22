@@ -29,7 +29,7 @@ func parsePositiveID(value, name string, c *gin.Context) (int64, bool) {
 
 func Index(service *raceService.RaceDetailService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		raceID, ok := parsePositiveID(c.Param("race_id"), "race_id", c)
+		raceID, ok := parsePositiveID(c.Param("id"), "race_id", c)
 		if !ok {
 			return
 		}
@@ -47,7 +47,7 @@ func Index(service *raceService.RaceDetailService) gin.HandlerFunc {
 
 func Show(service service) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		raceID, ok := parsePositiveID(c.Param("race_id"), "race_id", c)
+		raceID, ok := parsePositiveID(c.Param("id"), "race_id", c)
 		if !ok {
 			return
 		}
