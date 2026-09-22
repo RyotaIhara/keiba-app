@@ -21,6 +21,9 @@ backend/test/
     user/
     race/
     race_course/
+  model/
+    voting/
+      types/
 ```
 
 handler、service、infrastructureのテストファイルは、それぞれ対応する実装パッケージをimportして利用します。テストパッケージは実装パッケージと分離し、公開APIを通じて動作を検証します。
@@ -60,6 +63,16 @@ infrastructureテストでは、実DBへ接続せず`github.com/DATA-DOG/go-sqlm
 - `rows.Close`および`rows.Err`に関係する失敗経路を必要に応じて検証する
 
 テストでは実際のmodel、`RaceInput`、`RaceSearchInput`などの入力オブジェクトを使用し、テスト専用の簡易構造体で代替しません。
+
+### model・helper
+
+modelとhelperのテストも、実装パッケージ直下ではなく、対応する責務のディレクトリを
+`backend/test`配下に作成して配置します。テストパッケージは実装パッケージと分離し、
+公開メソッドを通じて動作を検証します。
+
+値オブジェクトの文字列変換やDB用の変換処理は、公開されている生成・解析・取得メソッドの
+結果を検証します。非公開メソッドをテストから直接呼び出すために、実装パッケージと同じ
+パッケージ名のテストを作成してはいけません。
 
 ## model・helperのテスト
 
