@@ -4,9 +4,9 @@ package config
 import (
 	raceHandler "keiba-app-backend/handler/race"
 	raceCourseHandler "keiba-app-backend/handler/race_course"
-	raceDetailHandler "keiba-app-backend/handler/race_detail"
 	userHandler "keiba-app-backend/handler/user"
-	raceService "keiba-app-backend/service/racing"
+	raceService "keiba-app-backend/service/race"
+	raceCourseService "keiba-app-backend/service/race_course"
 	userService "keiba-app-backend/service/user"
 
 	"github.com/gin-gonic/gin"
@@ -16,8 +16,7 @@ func Routing(
 	engin *gin.Engine,
 	userService *userService.Service,
 	raceService *raceService.RaceService,
-	raceCourseService *raceService.RaceCourseService,
-	raceDetailService *raceService.RaceDetailService,
+	raceCourseService *raceCourseService.RaceCourseService,
 ) {
 	// user
 	engin.GET("/api/users", userHandler.Index(userService))
@@ -28,8 +27,8 @@ func Routing(
 	// race
 	engin.GET("/api/races", raceHandler.Index(raceService))
 	engin.POST("/api/races", raceHandler.Create(raceService))
-	engin.GET("/api/races/:id/details", raceDetailHandler.Index(raceDetailService))
-	engin.GET("/api/races/:id/details/:race_detail_id", raceDetailHandler.Show(raceDetailService))
+	engin.GET("/api/races/:id/details", raceHandler.DetailsIndex(raceService))
+	engin.GET("/api/races/:id/details/:race_detail_id", raceHandler.DetailsShow(raceService))
 	engin.GET("/api/races/:id", raceHandler.Show(raceService))
 	engin.PUT("/api/races/:id", raceHandler.Update(raceService))
 	engin.DELETE("/api/races/:id", raceHandler.Delete(raceService))

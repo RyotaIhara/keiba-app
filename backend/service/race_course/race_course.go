@@ -1,8 +1,8 @@
-package racing
+package racecourse
 
 import (
 	raceCourseInfrastructure "keiba-app-backend/infrastructure/race_course"
-	racingModel "keiba-app-backend/model/racing"
+	raceCourseModel "keiba-app-backend/model/race_course"
 )
 
 type RaceCourseService struct {
@@ -13,25 +13,25 @@ func NewRaceCourseService(store *raceCourseInfrastructure.Store) *RaceCourseServ
 	return &RaceCourseService{store: store}
 }
 
-func (s *RaceCourseService) GetRaceCourses() ([]racingModel.Racecourse, error) {
+func (s *RaceCourseService) GetRaceCourses() ([]raceCourseModel.Racecourse, error) {
 	return s.store.FetchRaceCourses()
 }
 
-func (s *RaceCourseService) GetRaceCourse(id int64) (racingModel.Racecourse, error) {
+func (s *RaceCourseService) GetRaceCourse(id int64) (raceCourseModel.Racecourse, error) {
 	return s.store.FindRaceCourseByID(id)
 }
 
-func (s *RaceCourseService) CreateRaceCourse(code, name string) (racingModel.Racecourse, error) {
+func (s *RaceCourseService) CreateRaceCourse(code, name string) (raceCourseModel.Racecourse, error) {
 	id, err := s.store.CreateRaceCourse(code, name)
 	if err != nil {
-		return racingModel.Racecourse{}, err
+		return raceCourseModel.Racecourse{}, err
 	}
 	return s.store.FindRaceCourseByID(id)
 }
 
-func (s *RaceCourseService) UpdateRaceCourse(id int64, code, name string) (racingModel.Racecourse, error) {
+func (s *RaceCourseService) UpdateRaceCourse(id int64, code, name string) (raceCourseModel.Racecourse, error) {
 	if err := s.store.UpdateRaceCourse(id, code, name); err != nil {
-		return racingModel.Racecourse{}, err
+		return raceCourseModel.Racecourse{}, err
 	}
 	return s.store.FindRaceCourseByID(id)
 }

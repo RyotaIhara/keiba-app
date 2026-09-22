@@ -39,7 +39,6 @@ func main() {
 		app.UserService,
 		app.RaceService,
 		app.RaceCourseService,
-		app.RaceDetailService,
 	)
 	if err := engin.Run(":3000"); err != nil {
 		log.Fatal(err)

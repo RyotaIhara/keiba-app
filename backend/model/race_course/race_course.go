@@ -1,5 +1,5 @@
-// Package racing(Model)
-package racing
+// Package racecourse (Model)
+package racecourse
 
 type Racecourse struct {
 	ID   int64  // 競馬場ID

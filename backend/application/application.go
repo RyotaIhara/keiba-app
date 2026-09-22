@@ -6,29 +6,26 @@ import (
 
 	raceInfrastructure "keiba-app-backend/infrastructure/race"
 	raceCourseInfrastructure "keiba-app-backend/infrastructure/race_course"
-	raceDetailInfrastructure "keiba-app-backend/infrastructure/race_detail"
 	userInfrastructure "keiba-app-backend/infrastructure/user"
-	racingService "keiba-app-backend/service/racing"
+	raceService "keiba-app-backend/service/race"
+	raceCourseService "keiba-app-backend/service/race_course"
 	userService "keiba-app-backend/service/user"
 )
 
 type Application struct {
 	UserService       *userService.Service
-	RaceService       *racingService.RaceService
-	RaceCourseService *racingService.RaceCourseService
-	RaceDetailService *racingService.RaceDetailService
+	RaceService       *raceService.RaceService
+	RaceCourseService *raceCourseService.RaceCourseService
 }
 
 func New(db *sql.DB) *Application {
 	userStore := userInfrastructure.NewStore(db)
 	raceStore := raceInfrastructure.NewStore(db)
 	raceCourseStore := raceCourseInfrastructure.NewStore(db)
-	raceDetailStore := raceDetailInfrastructure.NewStore(db)
 
 	return &Application{
 		UserService:       userService.NewService(userStore),
-		RaceService:       racingService.NewRaceService(raceStore),
-		RaceCourseService: racingService.NewRaceCourseService(raceCourseStore),
-		RaceDetailService: racingService.NewRaceDetailService(raceDetailStore),
+		RaceService:       raceService.NewRaceService(raceStore),
+		RaceCourseService: raceCourseService.NewRaceCourseService(raceCourseStore),
 	}
 }

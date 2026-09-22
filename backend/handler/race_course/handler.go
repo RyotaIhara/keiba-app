@@ -9,14 +9,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	racingModel "keiba-app-backend/model/racing"
+	raceCourseModel "keiba-app-backend/model/race_course"
 )
 
 type raceCourseService interface {
-	GetRaceCourses() ([]racingModel.Racecourse, error)
-	GetRaceCourse(id int64) (racingModel.Racecourse, error)
-	CreateRaceCourse(code, name string) (racingModel.Racecourse, error)
-	UpdateRaceCourse(id int64, code, name string) (racingModel.Racecourse, error)
+	GetRaceCourses() ([]raceCourseModel.Racecourse, error)
+	GetRaceCourse(id int64) (raceCourseModel.Racecourse, error)
+	CreateRaceCourse(code, name string) (raceCourseModel.Racecourse, error)
+	UpdateRaceCourse(id int64, code, name string) (raceCourseModel.Racecourse, error)
 	DeleteRaceCourse(id int64) error
 }
 

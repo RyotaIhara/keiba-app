@@ -4,7 +4,7 @@ package racecourse
 import (
 	"database/sql"
 
-	racingModel "keiba-app-backend/model/racing"
+	raceCourseModel "keiba-app-backend/model/race_course"
 )
 
 type Store struct {
@@ -15,8 +15,8 @@ func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
 }
 
-func scanRaceCourse(scanner interface{ Scan(...any) error }) (racingModel.Racecourse, error) {
-	var raceCourse racingModel.Racecourse
+func scanRaceCourse(scanner interface{ Scan(...any) error }) (raceCourseModel.Racecourse, error) {
+	var raceCourse raceCourseModel.Racecourse
 
 	err := scanner.Scan(
 		&raceCourse.ID,
@@ -28,7 +28,7 @@ func scanRaceCourse(scanner interface{ Scan(...any) error }) (racingModel.Raceco
 }
 
 // FetchRaceCourses 競馬場一覧取得するメソッド
-func (s *Store) FetchRaceCourses() ([]racingModel.Racecourse, error) {
+func (s *Store) FetchRaceCourses() ([]raceCourseModel.Racecourse, error) {
 	rows, err := s.db.Query(`
 		SELECT id, code, name
 		FROM race_courses
@@ -39,7 +39,7 @@ func (s *Store) FetchRaceCourses() ([]racingModel.Racecourse, error) {
 	}
 	defer rows.Close()
 
-	var raceCourses []racingModel.Racecourse
+	var raceCourses []raceCourseModel.Racecourse
 
 	for rows.Next() {
 		raceCourse, err := scanRaceCourse(rows)
@@ -58,7 +58,7 @@ func (s *Store) FetchRaceCourses() ([]racingModel.Racecourse, error) {
 }
 
 // FindRaceCourseByID IDを指定して競馬場を取得するメソッド
-func (s *Store) FindRaceCourseByID(id int64) (racingModel.Racecourse, error) {
+func (s *Store) FindRaceCourseByID(id int64) (raceCourseModel.Racecourse, error) {
 	row := s.db.QueryRow(`
 		SELECT id, code, name
 		FROM race_courses

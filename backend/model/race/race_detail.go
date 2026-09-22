@@ -1,8 +1,8 @@
-// Package racing(Model)
-package racing
+// Package race (Model)
+package race
 
 import (
-	"keiba-app-backend/model/racing/types/race"
+	"keiba-app-backend/model/race/types/race"
 )
 
 type RaceDetail struct {

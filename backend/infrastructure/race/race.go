@@ -5,8 +5,9 @@ import (
 	"database/sql"
 	"time"
 
-	racingModel "keiba-app-backend/model/racing"
-	racingSupport "keiba-app-backend/model/racing/support"
+	raceModel "keiba-app-backend/model/race"
+	raceSupport "keiba-app-backend/model/race/support"
+	raceCourseModel "keiba-app-backend/model/race_course"
 )
 
 type Store struct {
@@ -17,9 +18,9 @@ func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
 }
 
-func scanRace(scanner interface{ Scan(...any) error }) (racingModel.Race, error) {
-	var race racingModel.Race
-	var raceCourse racingModel.Racecourse
+func scanRace(scanner interface{ Scan(...any) error }) (raceModel.Race, error) {
+	var race raceModel.Race
+	var raceCourse raceCourseModel.Racecourse
 	var startTime string
 
 	err := scanner.Scan(
@@ -51,8 +52,57 @@ func scanRace(scanner interface{ Scan(...any) error }) (racingModel.Race, error)
 	return race, err
 }
 
+func scanRaceDetail(scanner interface{ Scan(...any) error }) (raceModel.RaceDetail, error) {
+	var detail raceModel.RaceDetail
+	var race raceModel.Race
+	var raceCourse raceCourseModel.Racecourse
+	var startTime string
+
+	err := scanner.Scan(
+		&detail.ID,
+		&race.ID,
+		&race.RaceDate,
+		&raceCourse.ID,
+		&raceCourse.Code,
+		&raceCourse.Name,
+		&race.RaceNumber,
+		&race.RaceName,
+		&startTime,
+		&race.Surface,
+		&race.Distance,
+		&race.Direction,
+		&race.Weather,
+		&race.TrackCondition,
+		&race.RaceConditions,
+		&detail.HorseNumber,
+		&detail.FrameNumber,
+		&detail.HorseName,
+		&detail.Sex,
+		&detail.Age,
+		&detail.Weight,
+		&detail.Jockey,
+		&detail.Stable,
+		&detail.BodyWeight,
+		&detail.BodyWeightChange,
+		&detail.Odds,
+		&detail.Popularity,
+	)
+	if err != nil {
+		return detail, err
+	}
+
+	race.StartTime, err = time.Parse("15:04:05", startTime)
+	if err != nil {
+		return detail, err
+	}
+	race.Racecourse = &raceCourse
+	detail.Race = &race
+
+	return detail, nil
+}
+
 // FetchRaces レース一覧取得するメソッド
-func (s *Store) FetchRaces() ([]racingModel.Race, error) {
+func (s *Store) FetchRaces() ([]raceModel.Race, error) {
 	rows, err := s.db.Query(`
 		SELECT
 			r.id,
@@ -78,7 +128,7 @@ func (s *Store) FetchRaces() ([]racingModel.Race, error) {
 	}
 	defer rows.Close()
 
-	var races []racingModel.Race
+	var races []raceModel.Race
 
 	for rows.Next() {
 		race, err := scanRace(rows)
@@ -97,7 +147,7 @@ func (s *Store) FetchRaces() ([]racingModel.Race, error) {
 }
 
 // FindRaceByID IDを指定してレース情報を取得するメソッド
-func (s *Store) FindRaceByID(id int64) (racingModel.Race, error) {
+func (s *Store) FindRaceByID(id int64) (raceModel.Race, error) {
 	row := s.db.QueryRow(`
 		SELECT
 			r.id,
@@ -122,8 +172,103 @@ func (s *Store) FindRaceByID(id int64) (racingModel.Race, error) {
 	return scanRace(row)
 }
 
+func (s *Store) FetchRaceDetailsByRaceID(raceID int64) ([]raceModel.RaceDetail, error) {
+	rows, err := s.db.Query(`
+		SELECT
+			rd.id,
+			r.id,
+			r.race_date,
+			rc.id,
+			rc.code,
+			rc.name,
+			r.race_number,
+			r.race_name,
+			r.start_time,
+			r.surface,
+			r.distance,
+			r.direction,
+			r.weather,
+			r.track_condition,
+			r.race_conditions,
+			rd.horse_number,
+			rd.frame_number,
+			rd.horse_name,
+			rd.sex,
+			rd.age,
+			rd.weight,
+			rd.jockey,
+			rd.stable,
+			rd.body_weight,
+			rd.body_weight_change,
+			rd.odds,
+			rd.popularity
+		FROM race_details rd
+		INNER JOIN races r ON r.id = rd.race_id
+		INNER JOIN race_courses rc ON rc.id = r.race_course_id
+		WHERE rd.race_id = ?
+		ORDER BY rd.horse_number
+	`, raceID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var details []raceModel.RaceDetail
+	for rows.Next() {
+		detail, err := scanRaceDetail(rows)
+		if err != nil {
+			return nil, err
+		}
+		details = append(details, detail)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return details, nil
+}
+
+func (s *Store) FindRaceDetailByID(raceID, detailID int64) (raceModel.RaceDetail, error) {
+	row := s.db.QueryRow(`
+		SELECT
+			rd.id,
+			r.id,
+			r.race_date,
+			rc.id,
+			rc.code,
+			rc.name,
+			r.race_number,
+			r.race_name,
+			r.start_time,
+			r.surface,
+			r.distance,
+			r.direction,
+			r.weather,
+			r.track_condition,
+			r.race_conditions,
+			rd.horse_number,
+			rd.frame_number,
+			rd.horse_name,
+			rd.sex,
+			rd.age,
+			rd.weight,
+			rd.jockey,
+			rd.stable,
+			rd.body_weight,
+			rd.body_weight_change,
+			rd.odds,
+			rd.popularity
+		FROM race_details rd
+		INNER JOIN races r ON r.id = rd.race_id
+		INNER JOIN race_courses rc ON rc.id = r.race_course_id
+		WHERE rd.race_id = ? AND rd.id = ?
+	`, raceID, detailID)
+
+	return scanRaceDetail(row)
+}
+
 // CreateRace レース情報を作成する
-func (s *Store) CreateRace(input racingSupport.RaceInput) (int64, error) {
+func (s *Store) CreateRace(input raceSupport.RaceInput) (int64, error) {
 	result, err := s.db.Exec(`
 		INSERT INTO races (
 			race_date,
@@ -159,7 +304,7 @@ func (s *Store) CreateRace(input racingSupport.RaceInput) (int64, error) {
 }
 
 // UpdateRace レース情報を更新する
-func (s *Store) UpdateRace(id int64, input racingSupport.RaceInput) error {
+func (s *Store) UpdateRace(id int64, input raceSupport.RaceInput) error {
 	result, err := s.db.Exec(`
 		UPDATE races
 		SET

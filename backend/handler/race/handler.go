@@ -10,9 +10,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	racingSupport "keiba-app-backend/model/racing/support"
-	raceTypes "keiba-app-backend/model/racing/types/race"
-	raceService "keiba-app-backend/service/racing"
+	racingSupport "keiba-app-backend/model/race/support"
+	raceTypes "keiba-app-backend/model/race/types/race"
+	raceService "keiba-app-backend/service/race"
 )
 
 func Index(service *raceService.RaceService) gin.HandlerFunc {
@@ -21,6 +21,24 @@ func Index(service *raceService.RaceService) gin.HandlerFunc {
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch races"})
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, response)
+	}
+}
+
+func DetailsIndex(service *raceService.RaceService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		raceID, ok := parsePositiveID(c.Param("id"), "race_id", c)
+		if !ok {
+			return
+		}
+
+		response, err := service.GetRaceDetails(raceID)
+		if err != nil {
+			c.Error(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch race details"})
 			return
 		}
 
@@ -96,6 +114,16 @@ func parseID(c *gin.Context) (int64, bool) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "id must be a positive integer"})
 		return 0, false
 	}
+
+	return id, true
+}
+
+func parsePositiveID(value, name string, c *gin.Context) (int64, bool) {
+	id, err := strconv.ParseInt(value, 10, 64)
+	if err != nil || id <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": name + " must be a positive integer"})
+		return 0, false
+	}
 	return id, true
 }
 
@@ -129,6 +157,32 @@ func Show(service *raceService.RaceService) gin.HandlerFunc {
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch race"})
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, response)
+	}
+}
+
+func DetailsShow(service *raceService.RaceService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		raceID, ok := parsePositiveID(c.Param("id"), "race_id", c)
+		if !ok {
+			return
+		}
+		detailID, ok := parsePositiveID(c.Param("race_detail_id"), "race_detail_id", c)
+		if !ok {
+			return
+		}
+
+		response, err := service.GetRaceDetail(raceID, detailID)
+		if errors.Is(err, sql.ErrNoRows) {
+			c.JSON(http.StatusNotFound, gin.H{"error": "race detail not found"})
+			return
+		}
+		if err != nil {
+			c.Error(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch race detail"})
 			return
 		}
 
