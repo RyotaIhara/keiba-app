@@ -24,7 +24,7 @@ SELECT
     'firm',
     '2歳未勝利'
 FROM race_courses rc
-WHERE rc.code = 'tokyo'
+WHERE rc.code = '05'
 UNION ALL
 SELECT
     '2026-10-04',
@@ -39,7 +39,7 @@ SELECT
     'firm',
     '3歳以上1勝クラス'
 FROM race_courses rc
-WHERE rc.code = 'tokyo'
+WHERE rc.code = '05'
 UNION ALL
 SELECT
     '2026-10-04',
@@ -54,7 +54,7 @@ SELECT
     'good',
     '3歳以上2勝クラス'
 FROM race_courses rc
-WHERE rc.code = 'nakayama'
+WHERE rc.code = '06'
 UNION ALL
 SELECT
     '2026-10-11',
@@ -69,7 +69,7 @@ SELECT
     'firm',
     '2歳新馬'
 FROM race_courses rc
-WHERE rc.code = 'kyoto'
+WHERE rc.code = '08'
 UNION ALL
 SELECT
     '2026-10-11',
@@ -84,7 +84,7 @@ SELECT
     'soft',
     '3歳以上3勝クラス'
 FROM race_courses rc
-WHERE rc.code = 'hanshin'
+WHERE rc.code = '09'
 ON DUPLICATE KEY UPDATE
     race_name = VALUES(race_name),
     start_time = VALUES(start_time),

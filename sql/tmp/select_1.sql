@@ -1,1 +1,1 @@
-SELECT * FROM race_details;
+SELECT * FROM race_courses;

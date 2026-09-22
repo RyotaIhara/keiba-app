@@ -1,8 +1,14 @@
 INSERT INTO race_courses (code, name)
 VALUES
-    ('tokyo', '東京競馬場'),
-    ('nakayama', '中山競馬場'),
-    ('kyoto', '京都競馬場'),
-    ('hanshin', '阪神競馬場')
+    ('01', '札幌'),
+    ('02', '函館'),
+    ('03', '福島'),
+    ('04', '新潟'),
+    ('05', '東京'),
+    ('06', '中山'),
+    ('07', '中京'),
+    ('08', '京都'),
+    ('09', '阪神'),
+    ('10', '小倉')
 ON DUPLICATE KEY UPDATE
     name = VALUES(name);
