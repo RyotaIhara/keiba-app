@@ -27,7 +27,7 @@ func main() {
 	}
 	defer db.Close()
 
-	app := application.New(db)
+	app := application.NewApplication(db)
 
 	engin := gin.Default()
 	engin.Use(cors.New(cors.Config{

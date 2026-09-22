@@ -1,4 +1,4 @@
-// Package application assembles the application's dependencies.
+// Package application
 package application
 
 import (
@@ -20,8 +20,8 @@ type Application struct {
 	RaceCourseService *raceCourseService.RaceCourseService
 }
 
-// New アプリケーションの依存関係を組み立てる
-func New(db *sql.DB) *Application {
+// NewApplication アプリケーションの依存関係を組み立てる
+func NewApplication(db *sql.DB) *Application {
 	userStore := userInfrastructure.NewStore(db)
 	raceStore := raceInfrastructure.NewStore(db)
 	raceCourseStore := raceCourseInfrastructure.NewStore(db)

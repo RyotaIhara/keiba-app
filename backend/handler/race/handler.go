@@ -11,6 +11,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	handlerHelper "keiba-app-backend/helper"
 	racingSupport "keiba-app-backend/model/race/support"
 	raceTypes "keiba-app-backend/model/race/types"
 	raceService "keiba-app-backend/service/race"
@@ -55,7 +56,7 @@ func Index(service *raceSearchService.SearchService) gin.HandlerFunc {
 // Show 指定されたIDのレースを取得するハンドラ
 func Show(service *raceService.RaceService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		id, ok := parseID(c)
+		id, ok := handlerHelper.ParseID("", c)
 		if !ok {
 			return
 		}
@@ -78,7 +79,7 @@ func Show(service *raceService.RaceService) gin.HandlerFunc {
 // DetailsByID 指定されたレースの出走馬一覧を取得するハンドラ
 func DetailsByID(service *raceService.RaceService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		raceID, ok := parsePositiveID(c.Param("id"), "race_id", c)
+		raceID, ok := handlerHelper.ParseID("", c)
 		if !ok {
 			return
 		}
@@ -116,7 +117,7 @@ func Create(service *raceService.RaceService) gin.HandlerFunc {
 // Update 指定されたIDのレースを更新するハンドラ
 func Update(service *raceService.RaceService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		id, ok := parseID(c)
+		id, ok := handlerHelper.ParseID("", c)
 		if !ok {
 			return
 		}
@@ -143,7 +144,7 @@ func Update(service *raceService.RaceService) gin.HandlerFunc {
 // Delete 指定されたIDのレースを削除するハンドラ
 func Delete(service *raceService.RaceService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		id, ok := parseID(c)
+		id, ok := handlerHelper.ParseID("", c)
 		if !ok {
 			return
 		}
@@ -231,27 +232,6 @@ func parseRaceRequest(request raceRequest) (racingSupport.RaceInput, error) {
 		TrackCondition: request.TrackCondition,
 		RaceConditions: request.RaceConditions,
 	}, nil
-}
-
-// parseID パスパラメータからレースIDを解析する
-func parseID(c *gin.Context) (int64, bool) {
-	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err != nil || id <= 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "id must be a positive integer"})
-		return 0, false
-	}
-
-	return id, true
-}
-
-// parsePositiveID 指定された名前のIDパラメータを解析する
-func parsePositiveID(value, name string, c *gin.Context) (int64, bool) {
-	id, err := strconv.ParseInt(value, 10, 64)
-	if err != nil || id <= 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": name + " must be a positive integer"})
-		return 0, false
-	}
-	return id, true
 }
 
 // bindRaceRequest JSONリクエストを解析してレース入力モデルを生成する

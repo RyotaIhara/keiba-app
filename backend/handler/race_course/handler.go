@@ -5,10 +5,10 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 
+	handlerHelper "keiba-app-backend/helper"
 	raceCourseModel "keiba-app-backend/model/race_course"
 )
 
@@ -42,7 +42,7 @@ func Index(service raceCourseService) gin.HandlerFunc {
 // Show 指定されたIDの競馬場を取得するハンドラ
 func Show(service raceCourseService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		id, ok := parseID(c)
+		id, ok := handlerHelper.ParseID("", c)
 		if !ok {
 			return
 		}
@@ -81,7 +81,7 @@ func Create(service raceCourseService) gin.HandlerFunc {
 // Update 指定されたIDの競馬場を更新するハンドラ
 func Update(service raceCourseService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		id, ok := parseID(c)
+		id, ok := handlerHelper.ParseID("", c)
 		if !ok {
 			return
 		}
@@ -107,7 +107,7 @@ func Update(service raceCourseService) gin.HandlerFunc {
 // Delete 指定されたIDの競馬場を削除するハンドラ
 func Delete(service raceCourseService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		id, ok := parseID(c)
+		id, ok := handlerHelper.ParseID("", c)
 		if !ok {
 			return
 		}
@@ -123,14 +123,4 @@ func Delete(service raceCourseService) gin.HandlerFunc {
 		}
 		c.Status(http.StatusNoContent)
 	}
-}
-
-// parseID パスパラメータから競馬場IDを解析する
-func parseID(c *gin.Context) (int64, bool) {
-	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err != nil || id <= 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "id must be a positive integer"})
-		return 0, false
-	}
-	return id, true
 }

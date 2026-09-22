@@ -23,6 +23,7 @@ import { toRaceInput, toRaceListItem, type RaceListItem } from '@/mappers/raceMa
 
 const races = ref<RaceListItem[]>([])
 const raceCourses = ref<RaceCourseListItem[]>([])
+const searchOpen = ref(false)
 const searchForm = ref({
   race_date: '',
   race_course_id: '',
@@ -180,7 +181,22 @@ async function removeRace(race: RaceListItem) {
   <div class="p-8">
     <h1 class="text-2xl font-bold">レースリスト</h1>
     <div class="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
-      <form class="grid max-w-xl gap-3" @submit.prevent="searchRaces">
+      <button
+        type="button"
+        class="flex w-full items-center justify-between text-left font-semibold text-gray-700"
+        :aria-expanded="searchOpen"
+        aria-controls="race-search-form"
+        @click="searchOpen = !searchOpen"
+      >
+        <span>検索条件</span>
+        <span class="text-xl leading-none" aria-hidden="true">{{ searchOpen ? '−' : '+' }}</span>
+      </button>
+      <form
+        v-if="searchOpen"
+        id="race-search-form"
+        class="mt-4 grid max-w-xl gap-3"
+        @submit.prevent="searchRaces"
+      >
         <label class="flex flex-col gap-1 text-sm text-gray-700">
           開催日
           <input

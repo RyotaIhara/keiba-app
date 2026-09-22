@@ -5,10 +5,10 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 
+	handlerHelper "keiba-app-backend/helper"
 	userModel "keiba-app-backend/model/user"
 )
 
@@ -48,7 +48,7 @@ func Index(service userService) gin.HandlerFunc {
 // Show 指定されたIDのユーザーを取得するハンドラ
 func Show(service userService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		id, ok := parseID(c)
+		id, ok := handlerHelper.ParseID("", c)
 		if !ok {
 			return
 		}
@@ -91,7 +91,7 @@ func Create(service userService) gin.HandlerFunc {
 // Update 指定されたIDのユーザーを更新するハンドラ
 func Update(service userService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		id, ok := parseID(c)
+		id, ok := handlerHelper.ParseID("", c)
 		if !ok {
 			return
 		}
@@ -120,7 +120,7 @@ func Update(service userService) gin.HandlerFunc {
 // Delete 指定されたIDのユーザーを削除するハンドラ
 func Delete(service userService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		id, ok := parseID(c)
+		id, ok := handlerHelper.ParseID("", c)
 		if !ok {
 			return
 		}
@@ -138,14 +138,4 @@ func Delete(service userService) gin.HandlerFunc {
 
 		c.Status(http.StatusNoContent)
 	}
-}
-
-// parseID パスパラメータからユーザーIDを解析する
-func parseID(c *gin.Context) (int64, bool) {
-	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err != nil || id <= 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "id must be a positive integer"})
-		return 0, false
-	}
-	return id, true
 }
