@@ -12,11 +12,22 @@ import (
 	"github.com/gin-gonic/gin"
 
 	handlerHelper "keiba-app-backend/helper"
+	raceModel "keiba-app-backend/model/race"
 	racingSupport "keiba-app-backend/model/race/support"
 	raceTypes "keiba-app-backend/model/race/types"
-	raceService "keiba-app-backend/service/race"
-	raceSearchService "keiba-app-backend/service/race_search"
 )
+
+type raceServiceInterface interface {
+	GetRace(id int64) (raceModel.Race, error)
+	GetRaceDetails(raceID int64) ([]raceModel.RaceDetail, error)
+	CreateRace(input racingSupport.RaceInput) (raceModel.Race, error)
+	UpdateRace(id int64, input racingSupport.RaceInput) (raceModel.Race, error)
+	DeleteRace(id int64) error
+}
+
+type raceSearchServiceInterface interface {
+	SearchRaces(input racingSupport.RaceSearchInput) ([]raceModel.Race, error)
+}
 
 // レース情報を登録・更新するようのリクエスト
 type raceRequest struct {
@@ -34,7 +45,7 @@ type raceRequest struct {
 }
 
 // Index レース一覧を検索条件付きで取得するハンドラ
-func Index(service *raceSearchService.SearchService) gin.HandlerFunc {
+func Index(service raceSearchServiceInterface) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		input, err := parseRaceSearchInput(c)
 		if err != nil {
@@ -54,7 +65,7 @@ func Index(service *raceSearchService.SearchService) gin.HandlerFunc {
 }
 
 // Show 指定されたIDのレースを取得するハンドラ
-func Show(service *raceService.RaceService) gin.HandlerFunc {
+func Show(service raceServiceInterface) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, ok := handlerHelper.ParseID("", c)
 		if !ok {
@@ -77,7 +88,7 @@ func Show(service *raceService.RaceService) gin.HandlerFunc {
 }
 
 // DetailsByID 指定されたレースの出走馬一覧を取得するハンドラ
-func DetailsByID(service *raceService.RaceService) gin.HandlerFunc {
+func DetailsByID(service raceServiceInterface) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		raceID, ok := handlerHelper.ParseID("", c)
 		if !ok {
@@ -96,7 +107,7 @@ func DetailsByID(service *raceService.RaceService) gin.HandlerFunc {
 }
 
 // Create レースを作成するハンドラ
-func Create(service *raceService.RaceService) gin.HandlerFunc {
+func Create(service raceServiceInterface) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		input, ok := bindRaceRequest(c)
 		if !ok {
@@ -115,7 +126,7 @@ func Create(service *raceService.RaceService) gin.HandlerFunc {
 }
 
 // Update 指定されたIDのレースを更新するハンドラ
-func Update(service *raceService.RaceService) gin.HandlerFunc {
+func Update(service raceServiceInterface) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, ok := handlerHelper.ParseID("", c)
 		if !ok {
@@ -142,7 +153,7 @@ func Update(service *raceService.RaceService) gin.HandlerFunc {
 }
 
 // Delete 指定されたIDのレースを削除するハンドラ
-func Delete(service *raceService.RaceService) gin.HandlerFunc {
+func Delete(service raceServiceInterface) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, ok := handlerHelper.ParseID("", c)
 		if !ok {

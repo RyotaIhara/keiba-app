@@ -2,17 +2,20 @@
 package racesearch
 
 import (
-	raceInfrastructure "keiba-app-backend/infrastructure/race"
 	raceModel "keiba-app-backend/model/race"
 	raceSupport "keiba-app-backend/model/race/support"
 )
 
 type SearchService struct {
-	store *raceInfrastructure.Store
+	store raceSearchStore
+}
+
+type raceSearchStore interface {
+	SearchRaces(input raceSupport.RaceSearchInput) ([]raceModel.Race, error)
 }
 
 // NewSearchService レース検索Serviceを生成する
-func NewSearchService(store *raceInfrastructure.Store) *SearchService {
+func NewSearchService(store raceSearchStore) *SearchService {
 	return &SearchService{store: store}
 }
 

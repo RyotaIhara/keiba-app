@@ -1,17 +1,22 @@
 // Package user (Service)
 package user
 
-import (
-	userInfrastructure "keiba-app-backend/infrastructure/user"
-	userModel "keiba-app-backend/model/user"
-)
+import userModel "keiba-app-backend/model/user"
 
 type Service struct {
-	store *userInfrastructure.Store
+	store userStore
+}
+
+type userStore interface {
+	FetchUsers() ([]userModel.User, error)
+	FindUserByID(id int64) (userModel.User, error)
+	CreateUser(code, name, password string) (int64, error)
+	UpdateUser(id int64, code, name string) error
+	DeleteUser(id int64) error
 }
 
 // NewService ユーザーServiceを生成する
-func NewService(store *userInfrastructure.Store) *Service {
+func NewService(store userStore) *Service {
 	return &Service{store: store}
 }
 

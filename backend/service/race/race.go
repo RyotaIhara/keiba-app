@@ -2,17 +2,25 @@
 package race
 
 import (
-	raceInfrastructure "keiba-app-backend/infrastructure/race"
 	raceModel "keiba-app-backend/model/race"
 	raceSupport "keiba-app-backend/model/race/support"
 )
 
 type RaceService struct {
-	store *raceInfrastructure.Store
+	store raceStore
+}
+
+type raceStore interface {
+	FetchRaces() ([]raceModel.Race, error)
+	FindRaceByID(id int64) (raceModel.Race, error)
+	FetchRaceDetailsByRaceID(raceID int64) ([]raceModel.RaceDetail, error)
+	CreateRace(input raceSupport.RaceInput) (int64, error)
+	UpdateRace(id int64, input raceSupport.RaceInput) error
+	DeleteRace(id int64) error
 }
 
 // NewRaceService レースServiceを生成する
-func NewRaceService(store *raceInfrastructure.Store) *RaceService {
+func NewRaceService(store raceStore) *RaceService {
 	return &RaceService{store: store}
 }
 

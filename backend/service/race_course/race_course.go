@@ -1,16 +1,24 @@
+// Package racecourse (Service)
 package racecourse
 
 import (
-	raceCourseInfrastructure "keiba-app-backend/infrastructure/race_course"
 	raceCourseModel "keiba-app-backend/model/race_course"
 )
 
 type RaceCourseService struct {
-	store *raceCourseInfrastructure.Store
+	store raceCourseStore
+}
+
+type raceCourseStore interface {
+	FetchRaceCourses() ([]raceCourseModel.Racecourse, error)
+	FindRaceCourseByID(id int64) (raceCourseModel.Racecourse, error)
+	CreateRaceCourse(code, name string) (int64, error)
+	UpdateRaceCourse(id int64, code, name string) error
+	DeleteRaceCourse(id int64) error
 }
 
 // NewRaceCourseService 競馬場Serviceを生成する
-func NewRaceCourseService(store *raceCourseInfrastructure.Store) *RaceCourseService {
+func NewRaceCourseService(store raceCourseStore) *RaceCourseService {
 	return &RaceCourseService{store: store}
 }
 
