@@ -5,7 +5,13 @@ export interface ApiUser {
   Password: string
 }
 
-const USERS_API_URL = 'http://localhost:3000/api/users'
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, '')
+
+if (!apiBaseUrl) {
+  throw new Error('VITE_API_BASE_URL is not configured')
+}
+
+const USERS_API_URL = `${apiBaseUrl}/api/users`
 
 export async function getUsers(): Promise<ApiUser[]> {
   const response = await fetch(USERS_API_URL)

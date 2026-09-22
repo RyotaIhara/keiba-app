@@ -1,12 +1,10 @@
+# docker-composeはローカルだけ利用する想定。
 services:
   mysql:
     image: mysql:8.4
     container_name: tmp-app-mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is required}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:?MYSQL_DATABASE is required}
-      MYSQL_USER: ${MYSQL_USER:?MYSQL_USER is required}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?MYSQL_PASSWORD is required}
+    env_file:
+      - .env.local
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
@@ -27,6 +25,8 @@ services:
     container_name: tmp-app-backend
     ports:
       - "3000:3000"
+    env_file:
+      - .env.local
     volumes:
       - ./backend:/app
       - backend_tmp:/app/tmp
@@ -34,9 +34,6 @@ services:
     environment:
       DB_HOST: mysql
       DB_PORT: 3306
-      DB_NAME: ${MYSQL_DATABASE:?MYSQL_DATABASE is required}
-      DB_USER: ${MYSQL_USER:?MYSQL_USER is required}
-      DB_PASSWORD: ${MYSQL_PASSWORD:?MYSQL_PASSWORD is required}
     depends_on:
       mysql:
         condition: service_healthy
@@ -48,6 +45,8 @@ services:
     container_name: tmp-app-frontend
     ports:
       - "5173:5173"
+    env_file:
+      - .env.local
     volumes:
       - ./frontend:/app
       - frontend_node_modules:/app/node_modules

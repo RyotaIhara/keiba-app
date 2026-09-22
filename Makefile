@@ -8,6 +8,8 @@ install-frontend:
 # --------------------------------------------------
 # docker関連
 # --------------------------------------------------
+COMPOSE=docker compose --env-file .env.local
+
 display-images:
 	docker images | grep tmp-app
 
@@ -138,7 +140,7 @@ service-delete:
 sql:
 	@test -n "$(SQL)" || (echo "使用例: make sql SQL=path/to/file.sql" >&2; exit 1)
 	@test -f "$(SQL)" || (echo "SQLファイルが見つかりません: $(SQL)" >&2; exit 1)
-	docker compose exec -T mysql \
+	$(COMPOSE) exec -T mysql \
 		sh -c 'mysql --default-character-set=utf8mb4 -u"$$MYSQL_USER" -p"$$MYSQL_PASSWORD" "$$MYSQL_DATABASE"' \
 		< "$(SQL)"
 

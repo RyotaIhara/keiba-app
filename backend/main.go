@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
+	"strings"
 
 	"tmp-app-backend/application"
 	"tmp-app-backend/config"
@@ -12,6 +15,11 @@ import (
 )
 
 func main() {
+	origins, err := allowedOrigins()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	db, err := database.Connect()
 	if err != nil {
 		log.Fatal(err)
@@ -22,10 +30,7 @@ func main() {
 
 	engin := gin.Default()
 	engin.Use(cors.New(cors.Config{
-		AllowOrigins: []string{
-			"http://localhost:5173",
-			"http://127.0.0.1:5173",
-		},
+		AllowOrigins: origins,
 		AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders: []string{"Origin", "Content-Type", "Accept"},
 	}))
@@ -38,4 +43,25 @@ func main() {
 	if err := engin.Run(":3000"); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func allowedOrigins() ([]string, error) {
+	origins := os.Getenv("CORS_ALLOW_ORIGINS")
+	if origins == "" {
+		return nil, fmt.Errorf("CORS_ALLOW_ORIGINS is required")
+	}
+
+	allowed := make([]string, 0)
+	for origin := range strings.SplitSeq(origins, ",") {
+		origin = strings.TrimSpace(origin)
+		if origin != "" {
+			allowed = append(allowed, origin)
+		}
+	}
+
+	if len(allowed) == 0 {
+		return nil, fmt.Errorf("CORS_ALLOW_ORIGINS must contain at least one origin")
+	}
+
+	return allowed, nil
 }
