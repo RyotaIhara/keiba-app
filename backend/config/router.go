@@ -2,9 +2,9 @@
 package config
 
 import (
-	raceController "tmp-app-backend/controller/race"
-	raceCourseController "tmp-app-backend/controller/race_course"
-	userController "tmp-app-backend/controller/user"
+	raceHandler "tmp-app-backend/handler/race"
+	raceCourseHandler "tmp-app-backend/handler/race_course"
+	userHandler "tmp-app-backend/handler/user"
 	raceService "tmp-app-backend/service/racing"
 	userService "tmp-app-backend/service/user"
 
@@ -18,13 +18,13 @@ func Routing(
 	raceCourseService *raceService.RaceCourseService,
 ) {
 	// user
-	engin.GET("/api/users", userController.Index(userService))
+	engin.GET("/api/users", userHandler.Index(userService))
 	// race
-	engin.GET("/api/races", raceController.Index(raceService))
-	engin.POST("/api/races", raceController.Create(raceService))
-	engin.GET("/api/races/:id", raceController.Show(raceService))
-	engin.PUT("/api/races/:id", raceController.Update(raceService))
-	engin.DELETE("/api/races/:id", raceController.Delete(raceService))
+	engin.GET("/api/races", raceHandler.Index(raceService))
+	engin.POST("/api/races", raceHandler.Create(raceService))
+	engin.GET("/api/races/:id", raceHandler.Show(raceService))
+	engin.PUT("/api/races/:id", raceHandler.Update(raceService))
+	engin.DELETE("/api/races/:id", raceHandler.Delete(raceService))
 	// race_course
-	engin.GET("/api/race_courses", raceCourseController.Index(raceCourseService))
+	engin.GET("/api/race_courses", raceCourseHandler.Index(raceCourseService))
 }
