@@ -5,6 +5,8 @@ description: 対象Goモデル、関連モデル、DDL、enum、既存実装を�
 
 # モデル調査
 
+実行前に`references/common-rules.md`と、リポジトリルート配下の関連する`docs/*.md`を確認する。
+
 対象モデルを`<MODEL>`として指定する。`references/common-rules.md`を読み、次を調査する。
 
 - `backend/model/**/<model>.go`

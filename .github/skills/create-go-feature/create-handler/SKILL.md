@@ -5,6 +5,8 @@ description: 対象モデルを指定してGinの取得Handlerを作成する。
 
 # Handler作成
 
+実行前に`../references/common-rules.md`と、リポジトリルート配下の関連する`docs/*.md`を確認する。
+
 対象モデル`<MODEL>`、Service、HTTPメソッド、パスを指定する。既存Handlerのエラー・JSON形式を確認する。
 
 - `gin.HandlerFunc`を返す既存パターンを使う

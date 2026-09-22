@@ -5,6 +5,8 @@ description: 対象モデルの変更をgofmt、Goテスト、ビルドで検証
 
 # Go機能の検証
 
+実行前に`../references/common-rules.md`と、リポジトリルート配下の関連する`docs/*.md`を確認する。
+
 対象モデル`<MODEL>`と変更ファイルを指定する。まず`git diff --check`で空白エラーを確認し、変更したGoファイルをフォーマットする。
 
 ```sh

@@ -5,6 +5,8 @@ description: 対象モデルを指定してinfrastructureを呼び出すService�
 
 # Service作成
 
+実行前に`../references/common-rules.md`と、リポジトリルート配下の関連する`docs/*.md`を確認する。
+
 対象モデル`<MODEL>`と既存または追加済みStoreを指定する。`backend/service/<domain>/`の命名と構成を確認する。
 
 - 一覧・単件など要求されたユースケースだけを公開する

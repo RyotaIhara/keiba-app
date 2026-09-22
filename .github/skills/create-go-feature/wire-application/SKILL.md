@@ -5,6 +5,8 @@ description: 対象モデルのStoreとServiceをapplication.goのComposition Ro
 
 # Application依存性注入
 
+実行前に`../references/common-rules.md`と、リポジトリルート配下の関連する`docs/*.md`を確認する。
+
 対象モデル`<MODEL>`、Store、Serviceを指定する。`backend/application/application.go`と`backend/main.go`を確認する。
 
 - DBからStoreを生成する

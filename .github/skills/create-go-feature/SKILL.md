@@ -29,6 +29,18 @@ description: >
 RaceDetailモデルを対象に、Create Schema Skillを実行してください。
 ```
 
+## 実行前の必須確認
+
+すべての工程で、最初に次のファイルを確認する。
+
+1. `.github/skills/create-go-feature/references/common-rules.md`
+2. 対象に関連するリポジトリルートの`docs/*.md`（サブディレクトリを含む）
+3. 対象工程のSkillファイル
+
+`docs/`の規約は、コードの配置、命名、コメント、テスト、アーキテクチャ、検証方法に
+反映する。docsと既存コードまたは依頼内容が競合し、仕様を一意に決められない場合は、
+推測で実装せず、確認が取れるまで後続工程へ進まない。
+
 一連の処理は次の順序で実行する。
 
 1. `analyze-model`

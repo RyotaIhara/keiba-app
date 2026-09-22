@@ -5,6 +5,8 @@ description: 対象モデルを指定してinfrastructureのStore、取得SQL、
 
 # Infrastructure取得処理
 
+実行前に`../references/common-rules.md`と、リポジトリルート配下の関連する`docs/*.md`を確認する。
+
 対象モデル`<MODEL>`、テーブル`<TABLE>`、必要な取得条件を指定する。共通ルールと既存Storeを確認し、既存責務に合う`backend/infrastructure/<resource>/`へ追加する。
 
 - `NewStore(db *sql.DB)`と既存Storeの構成を再利用する

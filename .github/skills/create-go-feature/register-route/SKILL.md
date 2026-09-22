@@ -5,6 +5,8 @@ description: 対象モデルのHandlerをGinルーターへ登録する。
 
 # Router登録
 
+実行前に`../references/common-rules.md`と、リポジトリルート配下の関連する`docs/*.md`を確認する。
+
 対象リソース`<RESOURCE>`、Handler、HTTPメソッド、パスを指定する。`backend/config/router.go`の引数と既存ルートを確認する。
 
 - 既存の複数形・スネークケース規約に合わせる
