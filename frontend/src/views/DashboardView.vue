@@ -6,7 +6,7 @@ import HelloCard from '@/components/index/HelloCard.vue'
 <template>
   <div class="p-8">
     <h1 class="text-2xl font-bold">
-      Indexページ
+      Dashboardページ
     </h1>
 
     <HelloCard title="Hello World" />

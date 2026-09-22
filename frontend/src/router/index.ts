@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import IndexView from '@/views/IndexView.vue'
+import DashboardView from '@/views/DashboardView.vue'
 import RaceCourseView from '@/views/RaceCourseView.vue'
 import RaceView from '@/views/RaceView.vue'
 import UserView from '@/views/UserView.vue'
@@ -10,8 +10,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'route',
-      component: IndexView,
+      name: 'dashboard',
+      component: DashboardView,
     },
     {
       path: '/user',
