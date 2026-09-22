@@ -2,40 +2,36 @@
 package config
 
 import (
+	"keiba-app-backend/application"
 	raceHandler "keiba-app-backend/handler/race"
 	raceCourseHandler "keiba-app-backend/handler/race_course"
 	userHandler "keiba-app-backend/handler/user"
-	raceService "keiba-app-backend/service/race"
-	raceCourseService "keiba-app-backend/service/race_course"
-	userService "keiba-app-backend/service/user"
 
 	"github.com/gin-gonic/gin"
 )
 
 func Routing(
 	engin *gin.Engine,
-	userService *userService.Service,
-	raceService *raceService.RaceService,
-	raceCourseService *raceCourseService.RaceCourseService,
+	app *application.Application,
 ) {
 	// user
-	engin.GET("/api/users", userHandler.Index(userService))
-	engin.GET("/api/users/:id", userHandler.Show(userService))
-	engin.POST("/api/users", userHandler.Create(userService))
-	engin.PUT("/api/users/:id", userHandler.Update(userService))
-	engin.DELETE("/api/users/:id", userHandler.Delete(userService))
+	engin.GET("/api/users", userHandler.Index(app.UserService))
+	engin.GET("/api/users/:id", userHandler.Show(app.UserService))
+	engin.POST("/api/users", userHandler.Create(app.UserService))
+	engin.PUT("/api/users/:id", userHandler.Update(app.UserService))
+	engin.DELETE("/api/users/:id", userHandler.Delete(app.UserService))
 	// race
-	engin.GET("/api/races", raceHandler.Index(raceService))
-	engin.POST("/api/races", raceHandler.Create(raceService))
-	engin.GET("/api/races/:id/details", raceHandler.DetailsIndex(raceService))
-	engin.GET("/api/races/:id/details/:race_detail_id", raceHandler.DetailsShow(raceService))
-	engin.GET("/api/races/:id", raceHandler.Show(raceService))
-	engin.PUT("/api/races/:id", raceHandler.Update(raceService))
-	engin.DELETE("/api/races/:id", raceHandler.Delete(raceService))
+	engin.GET("/api/races", raceHandler.Index(app.RaceService))
+	engin.POST("/api/races", raceHandler.Create(app.RaceService))
+	engin.GET("/api/races/:id/details", raceHandler.DetailsIndex(app.RaceService))
+	engin.GET("/api/races/:id/details/:race_detail_id", raceHandler.DetailsShow(app.RaceService))
+	engin.GET("/api/races/:id", raceHandler.Show(app.RaceService))
+	engin.PUT("/api/races/:id", raceHandler.Update(app.RaceService))
+	engin.DELETE("/api/races/:id", raceHandler.Delete(app.RaceService))
 	// race_course
-	engin.GET("/api/race_courses", raceCourseHandler.Index(raceCourseService))
-	engin.GET("/api/race_courses/:id", raceCourseHandler.Show(raceCourseService))
-	engin.POST("/api/race_courses", raceCourseHandler.Create(raceCourseService))
-	engin.PUT("/api/race_courses/:id", raceCourseHandler.Update(raceCourseService))
-	engin.DELETE("/api/race_courses/:id", raceCourseHandler.Delete(raceCourseService))
+	engin.GET("/api/race_courses", raceCourseHandler.Index(app.RaceCourseService))
+	engin.GET("/api/race_courses/:id", raceCourseHandler.Show(app.RaceCourseService))
+	engin.POST("/api/race_courses", raceCourseHandler.Create(app.RaceCourseService))
+	engin.PUT("/api/race_courses/:id", raceCourseHandler.Update(app.RaceCourseService))
+	engin.DELETE("/api/race_courses/:id", raceCourseHandler.Delete(app.RaceCourseService))
 }

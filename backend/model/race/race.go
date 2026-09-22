@@ -4,7 +4,7 @@ package race
 import (
 	"time"
 
-	raceTypes "keiba-app-backend/model/race/types/race"
+	"keiba-app-backend/model/race/types"
 	raceCourseModel "keiba-app-backend/model/race_course"
 )
 
@@ -15,10 +15,10 @@ type Race struct {
 	RaceNumber     int                         // レース番号
 	RaceName       string                      // レース名
 	StartTime      time.Time                   // 発走時刻
-	Surface        raceTypes.Surface           // 馬場
+	Surface        types.Surface               // 馬場
 	Distance       int                         // 距離（メートル）
-	Direction      raceTypes.Direction         // コースの回り方向
-	Weather        raceTypes.Weather           // 天候
-	TrackCondition raceTypes.TrackCondition    // 馬場状態
+	Direction      types.Direction             // コースの回り方向
+	Weather        types.Weather               // 天候
+	TrackCondition types.TrackCondition        // 馬場状態
 	RaceConditions string                      // 出走条件
 }

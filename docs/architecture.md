@@ -91,17 +91,31 @@ DB 接続は `database/sql` と `go-sql-driver/mysql` を使用します。接�
 ```text
 HTTP request
   -> config/router.go
-  -> controller/*/handler.go
-  -> service/*
+  -> handler/*/handler.go
+  -> service/{race,race_course,user}
   -> infrastructure/* (database/sql)
   -> MySQL
 ```
 
-- **`controller`**: Gin の HTTP ハンドラー。Service を呼び出し、成功時は JSON、失敗時は 500 と固定のエラーメッセージを返します。
-- **`service`**: 一覧取得などのユースケースを提供します。現在の実装では Store の呼び出しを委譲しています。
+- **`handler`**: Gin の HTTP ハンドラー。Service を呼び出し、成功時は JSON、失敗時は HTTP ステータスと固定のエラーメッセージを返します。RaceDetail のエンドポイントも `handler/race` で扱います。
+- **`service`**: ドメイン単位でユースケースを提供します。`service/race` は Race と RaceDetail、`service/race_course` は RaceCourse、`service/user` は User を担当します。
 - **`infrastructure`**: SQL の発行と `database/sql.Rows` のモデルへの変換を担当します。
-- **`model`**: `User`、`Race`、`Racecourse` と、レースの馬場・天候・方向などの型を定義します。
-- **`application`**: DB 接続から各 Store/Service を組み立てる Composition Root です。
+- **`model`**: ドメイン単位でモデルを定義します。`model/race` は Race、RaceDetail、レース関連の型、`model/race_course` は Racecourse、`model/user` は User を担当します。
+- **`application`**: DB 接続から各 Store/Service を組み立てる Composition Root です。`Application` 構造体が各 Service を保持します。
+- **`config/router.go`**: `*application.Application` を受け取り、Application が保持する Service を各 Handler に渡してルートを登録します。
+
+### API の主な構成
+
+RaceDetail は Race の機能に統合されています。専用の Service、Infrastructure、Handler は持たず、Race の処理から取得します。
+
+```text
+GET /api/races
+GET /api/races/:id
+GET /api/races/:id/details
+GET /api/races/:id/details/:race_detail_id
+```
+
+`GET /api/races/:id/details` は指定した Race に紐づく RaceDetail を `horse_number` 昇順で返します。単件取得では `race_id` と `race_detail_id` の両方で対象を限定します。
 
 ### CORS
 

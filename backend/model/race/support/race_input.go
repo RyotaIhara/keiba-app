@@ -4,7 +4,7 @@ package support
 import (
 	"time"
 
-	raceTypes "keiba-app-backend/model/race/types/race"
+	"keiba-app-backend/model/race/types"
 )
 
 type RaceInput struct {
@@ -13,10 +13,10 @@ type RaceInput struct {
 	RaceNumber     int
 	RaceName       string
 	StartTime      time.Time
-	Surface        raceTypes.Surface
+	Surface        types.Surface
 	Distance       int
-	Direction      raceTypes.Direction
-	Weather        raceTypes.Weather
-	TrackCondition raceTypes.TrackCondition
+	Direction      types.Direction
+	Weather        types.Weather
+	TrackCondition types.TrackCondition
 	RaceConditions string
 }

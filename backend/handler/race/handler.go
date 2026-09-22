@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	racingSupport "keiba-app-backend/model/race/support"
-	raceTypes "keiba-app-backend/model/race/types/race"
+	raceTypes "keiba-app-backend/model/race/types"
 	raceService "keiba-app-backend/service/race"
 )
 

@@ -36,9 +36,7 @@ func main() {
 	}))
 	config.Routing(
 		engin,
-		app.UserService,
-		app.RaceService,
-		app.RaceCourseService,
+		app,
 	)
 	if err := engin.Run(":3000"); err != nil {
 		log.Fatal(err)

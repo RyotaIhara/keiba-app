@@ -1,5 +1,5 @@
-// Package race
-package race
+// Package types
+package types
 
 type TrackCondition string
 
