@@ -11,20 +11,9 @@ type Store struct {
 	db *sql.DB
 }
 
+// NewStore データベースを使う競馬場Storeを生成する
 func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
-}
-
-func scanRaceCourse(scanner interface{ Scan(...any) error }) (raceCourseModel.Racecourse, error) {
-	var raceCourse raceCourseModel.Racecourse
-
-	err := scanner.Scan(
-		&raceCourse.ID,
-		&raceCourse.Code,
-		&raceCourse.Name,
-	)
-
-	return raceCourse, err
 }
 
 // FetchRaceCourses 競馬場一覧取得するメソッド
@@ -115,4 +104,17 @@ func (s *Store) DeleteRaceCourse(id int64) error {
 		return err
 	}
 	return nil
+}
+
+// scanRaceCourse SQLの結果から競馬場モデルを生成する
+func scanRaceCourse(scanner interface{ Scan(...any) error }) (raceCourseModel.Racecourse, error) {
+	var raceCourse raceCourseModel.Racecourse
+
+	err := scanner.Scan(
+		&raceCourse.ID,
+		&raceCourse.Code,
+		&raceCourse.Name,
+	)
+
+	return raceCourse, err
 }

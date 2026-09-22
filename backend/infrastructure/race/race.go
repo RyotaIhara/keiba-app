@@ -15,91 +15,9 @@ type Store struct {
 	db *sql.DB
 }
 
+// NewStore データベースを使うレースStoreを生成する
 func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
-}
-
-func scanRace(scanner interface{ Scan(...any) error }) (raceModel.Race, error) {
-	var race raceModel.Race
-	var raceCourse raceCourseModel.Racecourse
-	var startTime string
-
-	err := scanner.Scan(
-		&race.ID,
-		&race.RaceDate,
-		&raceCourse.ID,
-		&raceCourse.Code,
-		&raceCourse.Name,
-		&race.RaceNumber,
-		&race.RaceName,
-		&startTime,
-		&race.Surface,
-		&race.Distance,
-		&race.Direction,
-		&race.Weather,
-		&race.TrackCondition,
-		&race.RaceConditions,
-	)
-	if err != nil {
-		return race, err
-	}
-
-	race.StartTime, err = time.Parse("15:04:05", startTime)
-	if err != nil {
-		return race, err
-	}
-	race.Racecourse = &raceCourse
-
-	return race, err
-}
-
-func scanRaceDetail(scanner interface{ Scan(...any) error }) (raceModel.RaceDetail, error) {
-	var detail raceModel.RaceDetail
-	var race raceModel.Race
-	var raceCourse raceCourseModel.Racecourse
-	var startTime string
-
-	err := scanner.Scan(
-		&detail.ID,
-		&race.ID,
-		&race.RaceDate,
-		&raceCourse.ID,
-		&raceCourse.Code,
-		&raceCourse.Name,
-		&race.RaceNumber,
-		&race.RaceName,
-		&startTime,
-		&race.Surface,
-		&race.Distance,
-		&race.Direction,
-		&race.Weather,
-		&race.TrackCondition,
-		&race.RaceConditions,
-		&detail.HorseNumber,
-		&detail.FrameNumber,
-		&detail.HorseName,
-		&detail.Sex,
-		&detail.Age,
-		&detail.Weight,
-		&detail.Jockey,
-		&detail.Stable,
-		&detail.BodyWeight,
-		&detail.BodyWeightChange,
-		&detail.Odds,
-		&detail.Popularity,
-	)
-	if err != nil {
-		return detail, err
-	}
-
-	race.StartTime, err = time.Parse("15:04:05", startTime)
-	if err != nil {
-		return detail, err
-	}
-	race.Racecourse = &raceCourse
-	detail.Race = &race
-
-	return detail, nil
 }
 
 // FetchRaces レース一覧取得するメソッド
@@ -389,4 +307,89 @@ func (s *Store) DeleteRace(id int64) error {
 	}
 
 	return nil
+}
+
+// scanRace SQLの結果からレースモデルを生成する
+func scanRace(scanner interface{ Scan(...any) error }) (raceModel.Race, error) {
+	var race raceModel.Race
+	var raceCourse raceCourseModel.Racecourse
+	var startTime string
+
+	err := scanner.Scan(
+		&race.ID,
+		&race.RaceDate,
+		&raceCourse.ID,
+		&raceCourse.Code,
+		&raceCourse.Name,
+		&race.RaceNumber,
+		&race.RaceName,
+		&startTime,
+		&race.Surface,
+		&race.Distance,
+		&race.Direction,
+		&race.Weather,
+		&race.TrackCondition,
+		&race.RaceConditions,
+	)
+	if err != nil {
+		return race, err
+	}
+
+	race.StartTime, err = time.Parse("15:04:05", startTime)
+	if err != nil {
+		return race, err
+	}
+	race.Racecourse = &raceCourse
+
+	return race, err
+}
+
+// scanRaceDetail SQLの結果からレース詳細モデルを生成する
+func scanRaceDetail(scanner interface{ Scan(...any) error }) (raceModel.RaceDetail, error) {
+	var detail raceModel.RaceDetail
+	var race raceModel.Race
+	var raceCourse raceCourseModel.Racecourse
+	var startTime string
+
+	err := scanner.Scan(
+		&detail.ID,
+		&race.ID,
+		&race.RaceDate,
+		&raceCourse.ID,
+		&raceCourse.Code,
+		&raceCourse.Name,
+		&race.RaceNumber,
+		&race.RaceName,
+		&startTime,
+		&race.Surface,
+		&race.Distance,
+		&race.Direction,
+		&race.Weather,
+		&race.TrackCondition,
+		&race.RaceConditions,
+		&detail.HorseNumber,
+		&detail.FrameNumber,
+		&detail.HorseName,
+		&detail.Sex,
+		&detail.Age,
+		&detail.Weight,
+		&detail.Jockey,
+		&detail.Stable,
+		&detail.BodyWeight,
+		&detail.BodyWeightChange,
+		&detail.Odds,
+		&detail.Popularity,
+	)
+	if err != nil {
+		return detail, err
+	}
+
+	race.StartTime, err = time.Parse("15:04:05", startTime)
+	if err != nil {
+		return detail, err
+	}
+	race.Racecourse = &raceCourse
+	detail.Race = &race
+
+	return detail, nil
 }

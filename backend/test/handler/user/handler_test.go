@@ -18,33 +18,32 @@ type mockUserService struct {
 	err   error
 }
 
+// GetUsers テスト用ユーザー一覧を返す
 func (m mockUserService) GetUsers() ([]userModel.User, error) {
 	return m.users, m.err
 }
 
+// GetUser テスト用ユーザーを返す
 func (mockUserService) GetUser(int64) (userModel.User, error) {
 	return userModel.User{}, nil
 }
 
+// CreateUser テスト用ユーザーを返す
 func (mockUserService) CreateUser(string, string, string) (userModel.User, error) {
 	return userModel.User{}, nil
 }
 
+// UpdateUser テスト用ユーザーを返す
 func (mockUserService) UpdateUser(int64, string, string) (userModel.User, error) {
 	return userModel.User{}, nil
 }
 
+// DeleteUser テスト用ユーザーを削除する
 func (mockUserService) DeleteUser(int64) error {
 	return nil
 }
 
-func newTestContext() (*gin.Context, *httptest.ResponseRecorder) {
-	rec := httptest.NewRecorder()
-	c, _ := gin.CreateTestContext(rec)
-	c.Request = httptest.NewRequest(http.MethodGet, "/api/users", nil)
-	return c, rec
-}
-
+// TestIndexReturnsUsersAsJSON ユーザー一覧をJSONで返すことを検証する
 func TestIndexReturnsUsersAsJSON(t *testing.T) {
 	// Arrange
 	gin.SetMode(gin.TestMode)
@@ -79,6 +78,7 @@ func TestIndexReturnsUsersAsJSON(t *testing.T) {
 	}
 }
 
+// TestIndexReturnsInternalServerErrorWhenServiceFails サービスエラー時に500を返すことを検証する
 func TestIndexReturnsInternalServerErrorWhenServiceFails(t *testing.T) {
 	// Arrange
 	gin.SetMode(gin.TestMode)
@@ -98,6 +98,14 @@ func TestIndexReturnsInternalServerErrorWhenServiceFails(t *testing.T) {
 	if len(c.Errors) != 1 || !errors.Is(c.Errors[0].Err, serviceErr) {
 		t.Fatalf("expected service error to be recorded in Gin context")
 	}
+}
+
+// newTestContext ユーザー一覧用のテストコンテキストを生成する
+func newTestContext() (*gin.Context, *httptest.ResponseRecorder) {
+	rec := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(rec)
+	c.Request = httptest.NewRequest(http.MethodGet, "/api/users", nil)
+	return c, rec
 }
 
 var _ interface {

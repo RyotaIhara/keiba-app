@@ -20,6 +20,7 @@ type Application struct {
 	RaceCourseService *raceCourseService.RaceCourseService
 }
 
+// New アプリケーションの依存関係を組み立てる
 func New(db *sql.DB) *Application {
 	userStore := userInfrastructure.NewStore(db)
 	raceStore := raceInfrastructure.NewStore(db)

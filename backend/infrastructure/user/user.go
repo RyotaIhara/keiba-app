@@ -11,21 +11,9 @@ type Store struct {
 	db *sql.DB
 }
 
+// NewStore データベースを使うユーザーStoreを生成する
 func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
-}
-
-func scanUser(scanner interface{ Scan(...any) error }) (userModel.User, error) {
-	var user userModel.User
-
-	err := scanner.Scan(
-		&user.ID,
-		&user.Code,
-		&user.Name,
-		&user.Password,
-	)
-
-	return user, err
 }
 
 // FetchUsers ユーザー一覧を取得するメソッド
@@ -130,4 +118,18 @@ func (s *Store) DeleteUser(id int64) error {
 		return err
 	}
 	return nil
+}
+
+// scanUser SQLの結果からユーザーモデルを生成する
+func scanUser(scanner interface{ Scan(...any) error }) (userModel.User, error) {
+	var user userModel.User
+
+	err := scanner.Scan(
+		&user.ID,
+		&user.Code,
+		&user.Name,
+		&user.Password,
+	)
+
+	return user, err
 }

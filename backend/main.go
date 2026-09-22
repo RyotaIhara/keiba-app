@@ -14,6 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// main アプリケーションを起動する
 func main() {
 	origins, err := allowedOrigins()
 	if err != nil {
@@ -43,6 +44,7 @@ func main() {
 	}
 }
 
+// allowedOrigins 環境変数から許可するオリジンを取得する
 func allowedOrigins() ([]string, error) {
 	origins := os.Getenv("CORS_ALLOW_ORIGINS")
 	if origins == "" {

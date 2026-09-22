@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Routing アプリケーションのHTTPルートを登録する
 func Routing(
 	engin *gin.Engine,
 	app *application.Application,

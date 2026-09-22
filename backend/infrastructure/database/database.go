@@ -9,6 +9,7 @@ import (
 	"github.com/go-sql-driver/mysql"
 )
 
+// Connect 環境変数を使ってデータベースへ接続する
 func Connect() (*sql.DB, error) {
 	host, err := requiredEnv("DB_HOST")
 	if err != nil {
@@ -56,6 +57,7 @@ func Connect() (*sql.DB, error) {
 	return db, nil
 }
 
+// requiredEnv 指定された必須環境変数の値を取得する
 func requiredEnv(name string) (string, error) {
 	value := os.Getenv(name)
 	if value == "" {
